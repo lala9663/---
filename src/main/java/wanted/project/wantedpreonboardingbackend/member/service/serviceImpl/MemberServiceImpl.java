@@ -2,6 +2,8 @@ package wanted.project.wantedpreonboardingbackend.member.service.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.response.LoginResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
+import wanted.project.wantedpreonboardingbackend.member.dto.response.SignUpResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.entity.Authority;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
 import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
@@ -38,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
     private final Response response;
     private final RedisTemplate redisTemplate;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
+    private static final Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
 
 
 
@@ -47,9 +51,39 @@ public class MemberServiceImpl implements MemberService {
      * @param signUp
      * @return
      */
+//    @Override
+//    @Transactional
+//    public ResponseEntity<?> signup(SignUpRequestDto signUp) {
+//        logger.debug("회원가입 시도: {}", signUp.getEmail());
+//
+//        if (memberRepository.existsByEmail(signUp.getEmail())) {
+//            return response.fail("이미 회원기입된 이메일 입니다.", HttpStatus.BAD_REQUEST);
+//        }
+//
+////        if (isDuplicatedEmail(signUp.getEmail())) {
+////            throw new MemberException("이미 존재하는 회원입니다.");
+////        }
+////        if (!isValidEmail(signUp.getEmail())) {
+////            throw new MemberException("유효하지 않은 이메일 형식입니다.");
+////        }
+////        if (!isValidPassword(signUp.getPassword())) {
+////            throw new MemberException("비밀번호는 숫자와 영문자를 포함한 8자 이상이어야 합니다.");
+////        }
+//        Member member = Member.builder()
+//                        .email(signUp.getEmail())
+//                        .password(passwordEncoder.encode(signUp.getPassword()))
+//                        .roles(Collections.singletonList(Authority.ROLE_USER.name()))
+//                        .build();
+//        memberRepository.save(member);
+//
+//        logger.info("회원가입 성공: {}", signUp.getEmail());
+//
+//        return response.success("회원가입 성공했습니다.");
+//    }
+
     @Override
     @Transactional
-    public ResponseEntity<?> signup(SignUpRequestDto signUp) {
+    public SignUpResponseDto signup(SignUpRequestDto signUp) {
 
         if (!isValidEmail(signUp.getEmail())) {
             throw new MemberException("유효하지 않은 이메일 형식입니다.");
@@ -66,74 +100,89 @@ public class MemberServiceImpl implements MemberService {
                         .password(passwordEncoder.encode(signUp.getPassword()))
                         .roles(Collections.singletonList(Authority.ROLE_USER.name()))
                         .build());
-        return response.success("회원가입 성공했습니다.");
+        return new SignUpResponseDto(member.getMemberId(), member.getEmail());
     }
+//    /**
+//     * 로그인
+//     * @param login
+//     * @return
+//     */
+//    @Override
+//    @Transactional
+//    public ResponseEntity<?> login(LoginRequestDto login) {
+//        // 이메일 확인
+//        Member member = memberRepository.findByEmail(login.getEmail())
+//                .orElseThrow(() -> new MemberException("해당 유저가 존재하지 않습니다."));
+//
+//        // 비밀번호 확인
+//        if (!isMatchesPassword(login.getPassword(), member.getPassword())) {
+//            throw new MemberException("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+//        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+//        UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
+//
+//        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+//        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//
+//        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+//        TokenResponseDto tokenInfo = jwtTokenProvider.generateToken(authentication);
+//
+//        // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+//        redisTemplate.opsForValue()
+//                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+//
+//
+//        // 로그인 성공 응답에 토큰 정보 추가하여 반환
+//        return response.success(tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
+//    }
 
-    /**
-     * 로그인
-     * @param login
-     * @return
-     */
     @Override
     @Transactional
-    public ResponseEntity<?> login(LoginRequestDto login) {
-        // 이메일 확인
+    public LoginResponseDto login(LoginRequestDto login) {
         Member member = memberRepository.findByEmail(login.getEmail())
-                .orElseThrow(() -> new MemberException("해당 유저가 존재하지 않습니다."));
-
-        // 비밀번호 확인
+                .orElseThrow(MemberException::new);
         if (!isMatchesPassword(login.getPassword(), member.getPassword())) {
             throw new MemberException("비밀번호가 일치하지 않습니다.");
         }
-
-        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
-
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenResponseDto tokenInfo = jwtTokenProvider.generateToken(authentication);
-
-        // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-
+        // 인증 성공 시 토큰 생성 및 반환
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), member.getAuthorities());
+        TokenResponseDto tokenResponse = jwtTokenProvider.generateToken(authentication);
 
         // 로그인 성공 응답에 토큰 정보 추가하여 반환
-        return response.success(tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
+        return new LoginResponseDto(member.getEmail(), tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
     }
 
-    /**
-     * 로그아웃
-     * @param logout
-     * @return
-     */
-    @Override
-    public ResponseEntity<?> logout(LogoutRequestDto logout) {
-        // 1. Access Token 검증
-        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
-            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
-        }
-
-        // 2. Access Token 에서 User email 을 가져옴
-        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
-
-        // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
-        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
-            // Refresh Token 삭제
-            redisTemplate.delete("RT:" + authentication.getName());
-        }
-
-        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장
-        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
-        redisTemplate.opsForValue()
-                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
-
-        return response.success("로그아웃 되었습니다.");
-    }
+//    /**
+//     * 로그아웃
+//     * @param logout
+//     * @return
+//     */
+//    @Override
+//    public ResponseEntity<?> logout(LogoutRequestDto logout) {
+//        // 1. Access Token 검증
+//        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
+//            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        // 2. Access Token 에서 User email 을 가져옴
+//        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
+//
+//        // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+//        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+//            // Refresh Token 삭제
+//            redisTemplate.delete("RT:" + authentication.getName());
+//        }
+//
+//        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장
+//        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
+//        redisTemplate.opsForValue()
+//                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+//
+//        return response.success("로그아웃 되었습니다.");
+//    }
 
 
     @Override
