@@ -15,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.LoginResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.SignUpResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.entity.Authority;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
 import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
@@ -25,7 +23,6 @@ import wanted.project.wantedpreonboardingbackend.member.repository.MemberReposit
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.dto.TokenResponseDto;
 import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import wanted.project.wantedpreonboardingbackend.security.util.SecurityUtil;
 
 import java.util.Collections;

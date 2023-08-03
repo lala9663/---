@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.LoginResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.SignUpResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
 
