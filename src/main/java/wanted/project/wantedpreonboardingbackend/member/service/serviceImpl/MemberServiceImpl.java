@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.dto.TokenResponseDto;
 import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import wanted.project.wantedpreonboardingbackend.security.util.SecurityUtil;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -70,6 +72,11 @@ public class MemberServiceImpl implements MemberService {
         return response.success("회원가입 성공했습니다.");
     }
 
+    /**
+     * 로그인
+     * @param login
+     * @return
+     */
     @Override
     @Transactional
     public ResponseEntity<?> login(LoginRequestDto login) {
@@ -97,14 +104,16 @@ public class MemberServiceImpl implements MemberService {
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-//        // 인증 성공 시 토큰 생성 및 반환
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), member.getAuthorities());
-//        TokenResponseDto tokenResponse = jwtTokenProvider.generateToken(authentication);
 
         // 로그인 성공 응답에 토큰 정보 추가하여 반환
         return response.success(tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
     }
 
+    /**
+     * 로그아웃
+     * @param logout
+     * @return
+     */
     @Override
     public ResponseEntity<?> logout(LogoutRequestDto logout) {
         // 1. Access Token 검증
@@ -129,6 +138,21 @@ public class MemberServiceImpl implements MemberService {
         return response.success("로그아웃 되었습니다.");
     }
 
+
+    @Override
+    public ResponseEntity<?> authority() {
+        // SecurityContext에 담겨 있는 authentication userEamil 정보
+        String memberEmail = SecurityUtil.getCurrentUserEmail();
+
+        Member member = memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("No authentication information."));
+
+        // add ROLE_ADMIN
+        member.getRoles().add(Authority.ROLE_ADMIN.name());
+        memberRepository.save(member);
+
+        return response.success();
+    }
 
     // 이메일 유효성 검사
     private boolean isValidEmail(String email) {

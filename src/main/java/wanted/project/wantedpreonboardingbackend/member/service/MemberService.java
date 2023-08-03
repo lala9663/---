@@ -11,4 +11,5 @@ public interface MemberService {
     ResponseEntity<?> signup(SignUpRequestDto singUp);
     ResponseEntity<?> login(LoginRequestDto login);
     ResponseEntity<?> logout(LogoutRequestDto logout);
+    ResponseEntity<?> authority();
 }
