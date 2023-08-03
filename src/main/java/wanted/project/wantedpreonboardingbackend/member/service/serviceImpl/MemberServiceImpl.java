@@ -24,6 +24,7 @@ import wanted.project.wantedpreonboardingbackend.member.repository.MemberReposit
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.dto.TokenResponseDto;
 import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-    public SignUpResponseDto signup(SignUpRequestDto signUp) {
+    public ResponseEntity<?> signup(SignUpRequestDto signUp) {
 
         if (!isValidEmail(signUp.getEmail())) {
             throw new MemberException("유효하지 않은 이메일 형식입니다.");
@@ -66,23 +67,42 @@ public class MemberServiceImpl implements MemberService {
                         .password(passwordEncoder.encode(signUp.getPassword()))
                         .roles(Collections.singletonList(Authority.ROLE_USER.name()))
                         .build());
-        return new SignUpResponseDto(member.getMemberId(), member.getEmail());
+        return response.success("회원가입 성공했습니다.");
     }
 
     @Override
     @Transactional
-    public LoginResponseDto login(LoginRequestDto login) {
+    public ResponseEntity<?> login(LoginRequestDto login) {
+        // 이메일 확인
         Member member = memberRepository.findByEmail(login.getEmail())
-                .orElseThrow(MemberException::new);
+                .orElseThrow(() -> new MemberException("해당 유저가 존재하지 않습니다."));
+
+        // 비밀번호 확인
         if (!isMatchesPassword(login.getPassword(), member.getPassword())) {
             throw new MemberException("비밀번호가 일치하지 않습니다.");
         }
-        // 인증 성공 시 토큰 생성 및 반환
-        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), member.getAuthorities());
-        TokenResponseDto tokenResponse = jwtTokenProvider.generateToken(authentication);
+
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
+
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        TokenResponseDto tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+
+//        // 인증 성공 시 토큰 생성 및 반환
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), member.getAuthorities());
+//        TokenResponseDto tokenResponse = jwtTokenProvider.generateToken(authentication);
 
         // 로그인 성공 응답에 토큰 정보 추가하여 반환
-        return new LoginResponseDto(member.getEmail(), tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+        return response.success(tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
     }
 
     @Override

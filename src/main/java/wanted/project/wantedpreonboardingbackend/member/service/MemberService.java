@@ -8,7 +8,7 @@ import wanted.project.wantedpreonboardingbackend.member.dto.response.LoginRespon
 import wanted.project.wantedpreonboardingbackend.member.dto.response.SignUpResponseDto;
 
 public interface MemberService {
-    SignUpResponseDto signup(SignUpRequestDto singUp);
-    LoginResponseDto login(LoginRequestDto login);
+    ResponseEntity<?> signup(SignUpRequestDto singUp);
+    ResponseEntity<?> login(LoginRequestDto login);
     ResponseEntity<?> logout(LogoutRequestDto logout);
 }
