@@ -7,11 +7,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.LoginResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.SignUpResponseDto;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
 
@@ -23,47 +20,54 @@ public class MemberController {
     private final MemberService memberService;
     private final Response response;
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> signUp(@Validated SignUpRequestDto signUp, Errors errors) {
-//
-//        if (errors.hasErrors()) {
-//            return response.invalidFields(Helper.refineErrors(errors));
-//        }
-//
-//        return memberService.signup(signUp);
-//    }
-
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponseDto> signUp(@Validated @RequestBody SignUpRequestDto signUpRequestDto, Errors errors) {
+    public ResponseEntity<?> signUp(@RequestBody@Validated SignUpRequestDto signUp, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return response.invalidFields(Helper.refineErrors(errors));
         }
 
-        SignUpResponseDto responseDto = memberService.signup(signUpRequestDto);
+        return memberService.signup(signUp);
+    }
 
-        return ResponseEntity.ok(responseDto);
+//    @PostMapping("/signup")
+//    public ResponseEntity<SignUpResponseDto> signUp(@Validated @RequestBody SignUpRequestDto signUpRequestDto, Errors errors) {
+//
+//        if (errors.hasErrors()) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        SignUpResponseDto responseDto = memberService.signup(signUpRequestDto);
+//
+//        return ResponseEntity.ok(responseDto);
+//    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Validated LoginRequestDto login, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return memberService.login(login);
     }
 //    @PostMapping("/login")
-//    public ResponseEntity<?> login(@Validated LoginRequestDto login, Errors errors) {
-//        if (errors.hasErrors()) {
-//            return response.invalidFields(Helper.refineErrors(errors));
-//        }
-//        return memberService.login(login);
+//    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+//        LoginResponseDto responseDto = memberService.login(loginRequestDto);
+//        return ResponseEntity.ok(responseDto);
 //    }
-@PostMapping("/login")
-public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-    LoginResponseDto responseDto = memberService.login(loginRequestDto);
-    return ResponseEntity.ok(responseDto);
-}
 
-//    @PostMapping("/logout")
+    //    @PostMapping("/logout")
 //    public ResponseEntity<?> logout(@Validated LogoutRequestDto logout, Errors errors) {
 //        if (errors.hasErrors()) {
 //            return response.invalidFields(Helper.refineErrors(errors));
 //        }
 //        return memberService.logout(logout);
 //    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<LogoutResponseDto> logout(LogoutRequestDto logoutRequestDto) {
+//        LogoutResponseDto responseDto = memberService.logout(logoutRequestDto);
+//        return ResponseEntity.ok(responseDto);
+//    }
+
     @GetMapping("/authority")
     public ResponseEntity<?> authority() {
         log.info("ADD ROLE_ADMIN");
