@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.request.ReissueRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
@@ -53,6 +54,15 @@ public class MemberController {
 //        LogoutResponseDto responseDto = memberService.logout(logoutRequestDto);
 //        return ResponseEntity.ok(responseDto);
 //    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissue(@RequestBody ReissueRequestDto reissue, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return memberService.reissue(reissue);
+    }
+
 
     @GetMapping("/authority")
     public ResponseEntity<?> authority() {

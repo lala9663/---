@@ -12,8 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.request.ReissueRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.entity.Authority;
@@ -106,10 +108,10 @@ public class MemberServiceImpl implements MemberService {
             return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
 
-        // 2. Access Token 에서 User email 을 가져옴
+        // 2. Access Token 에서 email 을 가져옴
         Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
 
-        // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+        // 3. Redis 에서 해당 email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
         if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
             // Refresh Token 삭제
             redisTemplate.delete("RT:" + authentication.getName());
@@ -151,10 +153,39 @@ public class MemberServiceImpl implements MemberService {
 //        return responseDto;
 //    }
 
+    @Override
+    public ResponseEntity<?> reissue(ReissueRequestDto reissue) {
+        // 1. Refresh Token 검증
+        if (!jwtTokenProvider.validateToken(reissue.getRefreshToken())) {
+            return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Access Token 에서 email 을 가져옵니다.
+        Authentication authentication = jwtTokenProvider.getAuthentication(reissue.getAccessToken());
+
+        // 3. Redis 에서 email 을 기반으로 저장된 Refresh Token 값을 가져옴
+        String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
+        if(ObjectUtils.isEmpty(refreshToken)) {
+            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+        }
+        if(!refreshToken.equals(reissue.getRefreshToken())) {
+            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 4. 새로운 토큰 생성
+        TokenResponseDto tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        // 5. RefreshToken Redis 업데이트
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+
+        return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
+    }
 
     @Override
     public ResponseEntity<?> authority() {
-        // SecurityContext에 담겨 있는 authentication userEamil 정보
+        // SecurityContext에 담겨 있는 authentication email 정보
         String memberEmail = SecurityUtil.getCurrentUserEmail();
 
         Member member = memberRepository.findByEmail(memberEmail)
