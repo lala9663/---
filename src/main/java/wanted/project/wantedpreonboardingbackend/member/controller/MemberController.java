@@ -1,5 +1,6 @@
 package wanted.project.wantedpreonboardingbackend.member.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public class MemberController {
     private final MemberService memberService;
     private final Response response;
 
+    @ApiOperation(value = "회원가입", notes = "회원가입을 진행한다.")
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody@Validated SignUpRequestDto signUp, Errors errors) {
 
@@ -32,7 +34,7 @@ public class MemberController {
         return memberService.signup(signUp);
     }
 
-
+    @ApiOperation(value = "로그인", notes = "로그인을 진행한다.")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated LoginRequestDto login, Errors errors) {
         if (errors.hasErrors()) {
@@ -41,7 +43,7 @@ public class MemberController {
         return memberService.login(login);
     }
 
-
+    @ApiOperation(value = "로그아웃", notes = "로그아웃을 진행한다.")
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") LogoutRequestDto logout, Errors errors) {
         if (errors.hasErrors()) {
@@ -55,6 +57,7 @@ public class MemberController {
 //        return ResponseEntity.ok(responseDto);
 //    }
 
+    @ApiOperation(value = "재발급", notes = "토큰을 재발급한다.")
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@RequestBody ReissueRequestDto reissue, Errors errors) {
         if (errors.hasErrors()) {
@@ -63,7 +66,7 @@ public class MemberController {
         return memberService.reissue(reissue);
     }
 
-
+    @ApiOperation(value = "권한 변경", notes = "권한을 변경한다.")
     @GetMapping("/authority")
     public ResponseEntity<?> authority() {
         log.info("ADD ROLE_ADMIN");
