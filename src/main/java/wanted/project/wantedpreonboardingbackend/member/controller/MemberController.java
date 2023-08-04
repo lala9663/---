@@ -7,6 +7,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
@@ -30,17 +31,6 @@ public class MemberController {
         return memberService.signup(signUp);
     }
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<SignUpResponseDto> signUp(@Validated @RequestBody SignUpRequestDto signUpRequestDto, Errors errors) {
-//
-//        if (errors.hasErrors()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        SignUpResponseDto responseDto = memberService.signup(signUpRequestDto);
-//
-//        return ResponseEntity.ok(responseDto);
-//    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated LoginRequestDto login, Errors errors) {
@@ -49,19 +39,15 @@ public class MemberController {
         }
         return memberService.login(login);
     }
-//    @PostMapping("/login")
-//    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-//        LoginResponseDto responseDto = memberService.login(loginRequestDto);
-//        return ResponseEntity.ok(responseDto);
-//    }
 
-    //    @PostMapping("/logout")
-//    public ResponseEntity<?> logout(@Validated LogoutRequestDto logout, Errors errors) {
-//        if (errors.hasErrors()) {
-//            return response.invalidFields(Helper.refineErrors(errors));
-//        }
-//        return memberService.logout(logout);
-//    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") LogoutRequestDto logout, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return memberService.logout(logout);
+    }
 //    @PostMapping("/logout")
 //    public ResponseEntity<LogoutResponseDto> logout(LogoutRequestDto logoutRequestDto) {
 //        LogoutResponseDto responseDto = memberService.logout(logoutRequestDto);
