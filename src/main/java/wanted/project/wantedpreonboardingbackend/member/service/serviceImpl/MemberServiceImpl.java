@@ -165,7 +165,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 3. Redis 에서 email 을 기반으로 저장된 Refresh Token 값을 가져옴
         String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
-        // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
+        // 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
         if(ObjectUtils.isEmpty(refreshToken)) {
             return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
