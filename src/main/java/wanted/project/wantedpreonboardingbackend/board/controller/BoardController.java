@@ -1,15 +1,15 @@
 package wanted.project.wantedpreonboardingbackend.board.controller;
 
+import io.jsonwebtoken.io.IOException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
+import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 
@@ -22,10 +22,34 @@ public class BoardController {
     private final Response response;
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")
-    @PostMapping("/new")
-    public ResponseEntity<Void> create(@RequestBody CreateBoardDto create, Authentication authentication) {
-        boardService.create(create, authentication.getName());
-        return ResponseEntity.ok(null);
+    @PostMapping("/{id}/write")
+    public ResponseEntity<Long> createBoard(@RequestBody CreateBoardDto create,
+                                            @PathVariable Long id,
+                                            Authentication authentication) {
+        try {
+            Long boardId = boardService.createBoard(create, id, authentication);
+            return ResponseEntity.ok(boardId);
+        } catch (IllegalArgumentException e) {
+            // 게시글 제목이나 내용이 잘못된 경우 예외 처리
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            // 기타 다른 예외 발생 시 서버 오류로 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/edit/{boardId}")
+    public ResponseEntity<Long> updateBoard(@PathVariable Long boardId, @RequestBody UpdateBoardDto update) {
+        try {
+            Long updatedBoardId = boardService.updateBoard(boardId, update);
+            if (updatedBoardId != null) {
+                return ResponseEntity.ok(updatedBoardId);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }
