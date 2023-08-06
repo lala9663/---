@@ -6,19 +6,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
+import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.board.repository.BoardRepository;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
-import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
 import wanted.project.wantedpreonboardingbackend.member.repository.MemberRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -63,6 +64,32 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.save(board);
 
         return board.getBoardId();
+    }
+
+    @Override
+    public Long deleteBoard(Long boardId) throws IOException {
+        Optional<Board> delBoard = boardRepository.findById(boardId);
+
+        if (delBoard.isEmpty()) {
+            return null;
+        }
+        Member member = delBoard.get().getMember();
+        boardRepository.deleteById(boardId);
+        return boardId;
+    }
+
+    @Override
+    public List<BoardDto> getAllBoards() {
+        List<Board> boards = boardRepository.findAll();
+        List<BoardDto> boardDtos = new ArrayList<>();
+        for (Board board : boards) {
+            BoardDto boardDto = new BoardDto();
+            boardDto.setBoardId(board.getBoardId());
+            boardDto.setTitle(board.getTitle());
+            boardDto.setContent(board.getContent());
+            boardDtos.add(boardDto);
+        }
+        return boardDtos;
     }
 
 }
