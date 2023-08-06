@@ -6,9 +6,8 @@ import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    List<Board> findByWriter(Member writer);
-
 }

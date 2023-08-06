@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
-@Builder
 public class Board extends BaseTime {
 
     @Id
@@ -24,9 +23,14 @@ public class Board extends BaseTime {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member writer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-
+    @Builder
+    public Board(String title, String content, Member member) {
+        this.title = title;
+        this.content = content;
+        this.member = member;
+    }
 }
