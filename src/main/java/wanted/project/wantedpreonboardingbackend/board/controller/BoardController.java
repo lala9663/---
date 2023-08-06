@@ -10,8 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
+import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
+import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/board")
@@ -22,12 +26,12 @@ public class BoardController {
     private final Response response;
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")
-    @PostMapping("/{id}/write")
+    @PostMapping("/{boardId}")
     public ResponseEntity<Long> createBoard(@RequestBody CreateBoardDto create,
-                                            @PathVariable Long id,
+                                            @PathVariable Long boardId,
                                             Authentication authentication) {
         try {
-            Long boardId = boardService.createBoard(create, id, authentication);
+            Long id = boardService.createBoard(create, boardId, authentication);
             return ResponseEntity.ok(boardId);
         } catch (IllegalArgumentException e) {
             // 게시글 제목이나 내용이 잘못된 경우 예외 처리
@@ -38,7 +42,8 @@ public class BoardController {
         }
     }
 
-    @PutMapping("/edit/{boardId}")
+    @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
+    @PutMapping("/{boardId}")
     public ResponseEntity<Long> updateBoard(@PathVariable Long boardId, @RequestBody UpdateBoardDto update) {
         try {
             Long updatedBoardId = boardService.updateBoard(boardId, update);
@@ -50,6 +55,28 @@ public class BoardController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다.")
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Long> deleteBoard(@PathVariable Long boardId) {
+        try {
+            Long deletedBoardId = boardService.deleteBoard(boardId);
+            if (deletedBoardId != null) {
+                return ResponseEntity.ok(deletedBoardId);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @ApiOperation(value = "게시글 전체 조회", notes = "게시글을 조회한다.")
+    @GetMapping("/all")
+    public ResponseEntity<List<BoardDto>> getAllBoards() {
+        List<BoardDto> boardDtos = boardService.getAllBoards();
+        return new ResponseEntity<>(boardDtos, HttpStatus.OK);
     }
 
 }
