@@ -79,4 +79,15 @@ public class BoardController {
         return new ResponseEntity<>(boardDtos, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "특정 게시글 조회", notes = "게시글을 조회한다.")
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardDto> getBoardById(@PathVariable Long boardId) {
+        BoardDto boardDto = boardService.findBoardById(boardId);
+        if (boardDto != null) {
+            return new ResponseEntity<>(boardDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
