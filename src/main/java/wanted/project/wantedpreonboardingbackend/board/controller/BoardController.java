@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
-import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 

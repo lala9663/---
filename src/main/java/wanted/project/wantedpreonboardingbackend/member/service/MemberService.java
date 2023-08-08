@@ -9,7 +9,9 @@ import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpReques
 public interface MemberService {
     ResponseEntity<?> signup(SignUpRequestDto singUp);
     ResponseEntity<?> login(LoginRequestDto login);
-    ResponseEntity<?> logout(LogoutRequestDto logout);
+
+    //    ResponseEntity<?> logout(LogoutRequestDto logout);
+    boolean logout(LogoutRequestDto logoutRequest);
     ResponseEntity<?> reissue(ReissueRequestDto reissue);
     ResponseEntity<?> authority();
 }

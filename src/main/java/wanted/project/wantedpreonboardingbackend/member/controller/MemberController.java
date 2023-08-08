@@ -3,6 +3,7 @@ package wanted.project.wantedpreonboardingbackend.member.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +26,7 @@ public class MemberController {
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 진행한다.")
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody@Validated SignUpRequestDto signUp, Errors errors) {
+    public ResponseEntity<?> signUp(@RequestBody @Validated SignUpRequestDto signUp, Errors errors) {
 
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
@@ -43,14 +44,28 @@ public class MemberController {
         return memberService.login(login);
     }
 
+//    @ApiOperation(value = "로그아웃", notes = "로그아웃을 진행한다.")
+//    @PostMapping("/logout")
+//    public void logout(@RequestHeader("Authorization") String authorizationHeader) {
+//        String accessToken = authorizationHeader.replace("Bearer ", "");
+//
+//        memberService.logout(new LogoutRequestDto(accessToken));
+//    }
+
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 진행한다.")
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") LogoutRequestDto logout, Errors errors) {
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
+    public ResponseEntity<String> logout(@RequestBody LogoutRequestDto logoutRequest) {
+        boolean logoutResult = memberService.logout(logoutRequest);
+
+        if (logoutResult) {
+            return ResponseEntity.ok("Logout successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
         }
-        return memberService.logout(logout);
     }
+
+
+
 //    @PostMapping("/logout")
 //    public ResponseEntity<LogoutResponseDto> logout(LogoutRequestDto logoutRequestDto) {
 //        LogoutResponseDto responseDto = memberService.logout(logoutRequestDto);

@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
+@Builder
 public class Board extends BaseTime {
 
     @Id

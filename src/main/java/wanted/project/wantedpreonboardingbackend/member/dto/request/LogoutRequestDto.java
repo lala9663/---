@@ -6,9 +6,10 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class LogoutRequestDto {
     private String accessToken;
-    private String refreshToken;
+    public LogoutRequestDto(String accessToken) {
+
+    }
 }

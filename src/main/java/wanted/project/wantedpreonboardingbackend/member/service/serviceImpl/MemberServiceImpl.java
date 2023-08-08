@@ -96,34 +96,79 @@ public class MemberServiceImpl implements MemberService {
         return response.success(tokenResponse, "로그인에 성공했습니다.", HttpStatus.OK);
     }
 
-    /**
-     * 로그아웃
-     * @param logout
-     * @return
-     */
+
+//    @Override
+//    public ResponseEntity<?> logout(LogoutRequestDto logout) {
+//        // 1. Access Token 검증
+//        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
+//            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        // 2. Access Token 에서 email 을 가져옴
+//        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
+//
+//        // 3. Redis 에서 해당 email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+//        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+//            // Refresh Token 삭제
+//            redisTemplate.delete("RT:" + authentication.getName());
+//        }
+//
+//        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장
+//        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
+//        redisTemplate.opsForValue()
+//                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+//
+//        return response.success("로그아웃 되었습니다.");
+//    }
+
+//    @Override
+//    public void logout(LogoutRequestDto logout) {
+//        // 1. Access Token 검증
+//        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
+//            return; // 검증 실패 시 무시하고 종료
+//        }
+//
+//        // 2. Access Token 에서 email 을 가져옴
+//        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
+//
+//        // 3. Redis 에서 해당 email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+//        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+//            // Refresh Token 삭제
+//            redisTemplate.delete("RT:" + authentication.getName());
+//        }
+//
+//        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장
+//        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
+//        redisTemplate.opsForValue()
+//                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+//    }
+
+    @Transactional
     @Override
-    public ResponseEntity<?> logout(LogoutRequestDto logout) {
-        // 1. Access Token 검증
-        if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
-            return response.fail("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+    public boolean logout(LogoutRequestDto logoutRequest) {
+        String accessToken = logoutRequest.getAccessToken();
+
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
 
-        // 2. Access Token 에서 email 을 가져옴
-        Authentication authentication = jwtTokenProvider.getAuthentication(logout.getAccessToken());
+        // Access Token에서 User email을 가져온다
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
 
-        // 3. Redis 에서 해당 email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+        // Redis에서 해당 User email로 저장된 Refresh Token이 있는지 여부를 확인 후에 있을 경우 삭제를 한다.
         if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
-            // Refresh Token 삭제
+            // Refresh Token을 삭제
             redisTemplate.delete("RT:" + authentication.getName());
         }
 
-        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장
-        Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
-        redisTemplate.opsForValue()
-                .set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+        // 해당 Access Token 유효시간을 가지고 와서 Blacklist에 저장하기
+        Long expiration = jwtTokenProvider.getExpiration(accessToken);
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 
-        return response.success("로그아웃 되었습니다.");
+        return true;
     }
+
+
 
 //    @Override
 //    public LogoutResponseDto logout(LogoutRequestDto logout) {
