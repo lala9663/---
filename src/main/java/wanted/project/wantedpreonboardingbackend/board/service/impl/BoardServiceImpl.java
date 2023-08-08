@@ -67,16 +67,24 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public Long deleteBoard(Long boardId) throws IOException {
-        Optional<Board> delBoard = boardRepository.findById(boardId);
+        Optional<Board> deleteBoard = boardRepository.findById(boardId);
 
-        if (delBoard.isEmpty()) {
+        if (deleteBoard.isEmpty()) {
             return null;
         }
-        Member member = delBoard.get().getMember();
-        boardRepository.deleteById(boardId);
+
+        Board board = deleteBoard.get();
+        Member member = board.getMember();
+
+        board.delete();
+
+        boardRepository.save(board);
+
         return boardId;
     }
+
 
     @Override
     public List<BoardDto> getAllBoards() {
@@ -90,6 +98,21 @@ public class BoardServiceImpl implements BoardService {
             boardDtos.add(boardDto);
         }
         return boardDtos;
+    }
+
+    @Override
+    public BoardDto findBoardById(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+
+        if (board != null) {
+            BoardDto boardDto = new BoardDto();
+            boardDto.setBoardId(board.getBoardId());
+            boardDto.setTitle(board.getTitle());
+            boardDto.setContent(board.getContent());
+            return boardDto;
+        } else {
+            return null;
+        }
     }
 
 }

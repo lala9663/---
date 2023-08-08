@@ -14,4 +14,5 @@ public interface BoardService {
     Long updateBoard(Long boardId, UpdateBoardDto update) throws IOException;
     Long deleteBoard(Long boardId) throws IOException;
     List<BoardDto> getAllBoards();
+    BoardDto findBoardById(Long boardId);
 }
