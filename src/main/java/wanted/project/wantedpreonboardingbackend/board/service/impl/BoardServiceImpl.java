@@ -3,8 +3,6 @@ package wanted.project.wantedpreonboardingbackend.board.service.impl;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +10,7 @@ import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDt
 import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import wanted.project.wantedpreonboardingbackend.board.entity.Board;
+import wanted.project.wantedpreonboardingbackend.board.exception.BoardException;
 import wanted.project.wantedpreonboardingbackend.board.repository.BoardRepository;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
@@ -19,7 +18,6 @@ import wanted.project.wantedpreonboardingbackend.member.repository.MemberReposit
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -54,10 +52,15 @@ public class BoardServiceImpl implements BoardService {
         Optional<Board> optBoard = boardRepository.findById(boardId);
 
         if (optBoard.isEmpty()) {
-            return null;
+            throw new BoardException.BoardNotFoundException();
         }
 
         Board board = optBoard.get();
+
+        if (board.isDeleted()) {
+            throw new BoardException.BoardDeletedException();
+        }
+
         board.setTitle(update.getTitle());
         board.setContent(update.getContent());
 
@@ -72,7 +75,7 @@ public class BoardServiceImpl implements BoardService {
         Optional<Board> deleteBoard = boardRepository.findById(boardId);
 
         if (deleteBoard.isEmpty()) {
-            return null;
+             throw new BoardException.BoardDeletedException();
         }
 
         Board board = deleteBoard.get();
@@ -80,7 +83,13 @@ public class BoardServiceImpl implements BoardService {
 
         board.delete();
 
-        boardRepository.save(board);
+
+        try {
+            boardRepository.save(board); // 논리적 삭제 상태 저장
+        } catch (Exception e) {
+            throw new BoardException.FailedException("Failed to save board after deletion");
+        }
+
 
         return boardId;
     }
