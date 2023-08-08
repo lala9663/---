@@ -27,10 +27,11 @@ public class Board extends BaseTime {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder
-    public Board(String title, String content, Member member) {
-        this.title = title;
-        this.content = content;
-        this.member = member;
+    @Column(nullable = false)
+    private boolean boardDeleted = false;
+
+    public void delete() {
+        this.boardDeleted = true;
     }
+
 }
