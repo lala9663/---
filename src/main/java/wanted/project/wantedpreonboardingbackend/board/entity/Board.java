@@ -34,4 +34,8 @@ public class Board extends BaseTime {
         this.boardDeleted = true;
     }
 
+    public boolean isDeleted() {
+        return this.boardDeleted;
+    }
+
 }
