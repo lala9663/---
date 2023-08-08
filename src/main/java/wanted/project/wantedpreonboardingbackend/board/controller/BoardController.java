@@ -4,6 +4,7 @@ import io.jsonwebtoken.io.IOException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -87,6 +88,16 @@ public class BoardController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @ApiOperation(value = "페이징", notes = "1~10번 게시글 보여준다")
+    @GetMapping("/paged")
+    public ResponseEntity<Page<BoardDto>> getAllBoardsWithPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<BoardDto> boardPage = boardService.getAllBoardsWithPagination(page, size);
+        return new ResponseEntity<>(boardPage, HttpStatus.OK);
     }
 
 }

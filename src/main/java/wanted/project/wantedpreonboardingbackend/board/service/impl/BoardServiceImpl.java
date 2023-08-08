@@ -3,6 +3,10 @@ package wanted.project.wantedpreonboardingbackend.board.service.impl;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,33 +84,24 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = deleteBoard.get();
         Member member = board.getMember();
-
         board.delete();
 
-
         try {
-            boardRepository.save(board); // 논리적 삭제 상태 저장
+            boardRepository.save(board);
         } catch (Exception e) {
-            throw new BoardException.FailedException("Failed to save board after deletion");
+            throw new BoardException.FailedException("삭제 후 저장 실패");
         }
-
-
         return boardId;
     }
-
 
     @Override
     public List<BoardDto> getAllBoards() {
         List<Board> boards = boardRepository.findAll();
-        List<BoardDto> boardDtos = new ArrayList<>();
+        List<BoardDto> boardDtoList = new ArrayList<>();
         for (Board board : boards) {
-            BoardDto boardDto = new BoardDto();
-            boardDto.setBoardId(board.getBoardId());
-            boardDto.setTitle(board.getTitle());
-            boardDto.setContent(board.getContent());
-            boardDtos.add(boardDto);
+            boardDtoList.add(convertToBoardDto(board));
         }
-        return boardDtos;
+        return boardDtoList;
     }
 
     @Override
@@ -114,14 +109,28 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(boardId).orElse(null);
 
         if (board != null) {
-            BoardDto boardDto = new BoardDto();
-            boardDto.setBoardId(board.getBoardId());
-            boardDto.setTitle(board.getTitle());
-            boardDto.setContent(board.getContent());
-            return boardDto;
+            return convertToBoardDto(board);
         } else {
             return null;
         }
     }
 
+    @Override
+    public Page<BoardDto> getAllBoardsWithPagination(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+        List<BoardDto> boardDtoList = new ArrayList<>();
+        for (Board board : boardPage.getContent()) {
+            boardDtoList.add(convertToBoardDto(board));
+        }
+        return new PageImpl<>(boardDtoList, pageable, boardPage.getTotalElements());
+    }
+
+    private BoardDto convertToBoardDto(Board board) {
+        BoardDto boardDto = new BoardDto();
+        boardDto.setBoardId(board.getBoardId());
+        boardDto.setTitle(board.getTitle());
+        boardDto.setContent(board.getContent());
+        return boardDto;
+    }
 }
