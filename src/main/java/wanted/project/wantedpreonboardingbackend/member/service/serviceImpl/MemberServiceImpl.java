@@ -211,6 +211,23 @@ public class MemberServiceImpl implements MemberService {
         return temporaryPassword;
     }
 
+    @Override
+    @Transactional
+    public String changePassword(String email, ChangePasswordRequestDto request) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException("회원을 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
+            throw new MemberException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        String newPassword = passwordEncoder.encode(request.getNewPassword());
+        member.setPassword(newPassword);
+        memberRepository.save(member);
+
+        return newPassword;
+    }
+
 
     // 이메일 유효성 검사
     private boolean isValidEmail(String email) {

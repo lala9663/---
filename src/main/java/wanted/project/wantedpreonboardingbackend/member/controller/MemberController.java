@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +72,17 @@ public class MemberController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
+    }
+
+    @ApiOperation(value = "비밀번호 변경", notes = "비밀번호를 변경합니다.")
+    @PutMapping("/my-page/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequestDto request,
+                                                 @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7); // "Bearer " 접두사 제거
+        String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
+
+        memberService.changePassword(loggedInEmail, request);
+        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
 
 

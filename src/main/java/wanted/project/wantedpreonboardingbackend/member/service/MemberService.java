@@ -15,5 +15,6 @@ public interface MemberService {
     ResponseEntity<?> authority();
     List<BoardDto> getBoardsForMember(String email);
     String findPassword(FindPasswordRequestDto find);
+    String changePassword(String email, ChangePasswordRequestDto request);
 
 }
