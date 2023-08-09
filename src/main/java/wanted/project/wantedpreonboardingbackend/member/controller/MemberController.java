@@ -9,11 +9,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.ReissueRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.request.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
+import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
 import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
@@ -60,6 +58,20 @@ public class MemberController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
 //        }
 //    }
+
+    @ApiOperation(value = "비밀번호 재발급", notes = "아이디와 번호를 통한 비밀번호 재발급")
+    @PostMapping("/findMember")
+    public ResponseEntity<String> findPassword(@RequestBody FindPasswordRequestDto find) {
+        try {
+            String temporaryPassword = memberService.findPassword(find);
+            return ResponseEntity.ok(temporaryPassword);
+        } catch (MemberException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
+    }
+
 
     @ApiOperation(value = "해당 멤버의 게시글", notes = "로그인한 멤버의 게시글 목록")
     @GetMapping("/my-boards")

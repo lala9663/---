@@ -1,15 +1,11 @@
 package wanted.project.wantedpreonboardingbackend.member.dto.request;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class SignUpRequestDto {
+public class FindPasswordRequestDto {
     private String email;
-    private String password;
     private String phone;
 }
