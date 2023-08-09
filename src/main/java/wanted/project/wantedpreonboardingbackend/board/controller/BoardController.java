@@ -26,7 +26,7 @@ public class BoardController {
     private final Response response;
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")
-    @PostMapping("/{boardId}")
+    @PostMapping
     public ResponseEntity<Long> createBoard(@RequestBody CreateBoardDto create,
                                             @PathVariable Long boardId,
                                             Authentication authentication) {

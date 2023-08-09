@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+
     @Override
     @Transactional
     public Long createBoard(CreateBoardDto create, Long id, Authentication authentication) throws IOException {
@@ -65,6 +67,17 @@ public class BoardServiceImpl implements BoardService {
             throw new BoardException.BoardDeletedException();
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInEmail = authentication.getName();
+
+        // 현재 로그인한 사용자가 작성한 모든 게시글을 조회
+        List<Board> memberBoards = boardRepository.findByMemberEmail(loggedInEmail);
+
+        // 수정하려는 게시글의 작성자와 비교
+        if (!memberBoards.contains(board)) {
+            throw new BoardException.BoardNoPermissionException();
+        }
+
         board.setTitle(update.getTitle());
         board.setContent(update.getContent());
 
@@ -79,7 +92,7 @@ public class BoardServiceImpl implements BoardService {
         Optional<Board> deleteBoard = boardRepository.findById(boardId);
 
         if (deleteBoard.isEmpty()) {
-             throw new BoardException.BoardDeletedException();
+            throw new BoardException.BoardDeletedException();
         }
 
         Board board = deleteBoard.get();
@@ -133,4 +146,6 @@ public class BoardServiceImpl implements BoardService {
         boardDto.setContent(board.getContent());
         return boardDto;
     }
+
+
 }

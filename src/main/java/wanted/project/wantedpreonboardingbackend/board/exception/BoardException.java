@@ -17,6 +17,12 @@ public class BoardException extends RuntimeException {
         }
     }
 
+    public static class BoardNoPermissionException extends BoardException {
+        public BoardNoPermissionException() {
+            super("권한이 없습니다.");
+        }
+    }
+
     public static class FailedException extends BoardException {
         public FailedException(String message) {
             super(message);
