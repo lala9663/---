@@ -33,6 +33,14 @@ public class Member extends BaseTime implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Board> boards = new ArrayList<>();
+
+    // 게시판 추가 메소드
+    public void addBoard(Board board) {
+        this.boards.add(board);
+        board.setMember(this);
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();

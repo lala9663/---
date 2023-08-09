@@ -46,30 +46,14 @@ public class MemberController {
 
 //    @ApiOperation(value = "로그아웃", notes = "로그아웃을 진행한다.")
 //    @PostMapping("/logout")
-//    public void logout(@RequestHeader("Authorization") String authorizationHeader) {
-//        String accessToken = authorizationHeader.replace("Bearer ", "");
+//    public ResponseEntity<String> logout(@RequestBody LogoutRequestDto logoutRequest) {
+//        boolean logoutResult = memberService.logout(logoutRequest);
 //
-//        memberService.logout(new LogoutRequestDto(accessToken));
-//    }
-
-    @ApiOperation(value = "로그아웃", notes = "로그아웃을 진행한다.")
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody LogoutRequestDto logoutRequest) {
-        boolean logoutResult = memberService.logout(logoutRequest);
-
-        if (logoutResult) {
-            return ResponseEntity.ok("Logout successful");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
-        }
-    }
-
-
-
-//    @PostMapping("/logout")
-//    public ResponseEntity<LogoutResponseDto> logout(LogoutRequestDto logoutRequestDto) {
-//        LogoutResponseDto responseDto = memberService.logout(logoutRequestDto);
-//        return ResponseEntity.ok(responseDto);
+//        if (logoutResult) {
+//            return ResponseEntity.ok("Logout successful");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
+//        }
 //    }
 
     @ApiOperation(value = "재발급", notes = "토큰을 재발급한다.")

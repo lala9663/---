@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
+import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
+import wanted.project.wantedpreonboardingbackend.member.dto.response.MemberDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
+import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
+import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 
@@ -23,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final Response response;
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")
@@ -38,7 +44,7 @@ public class BoardController {
     @PutMapping("/{boardId}")
     public ResponseEntity<Long> updateBoard(@PathVariable Long boardId, @RequestBody UpdateBoardDto update) {
         try {
-            Long updatedBoardId = boardService.updateBoard(boardId, update);
+            Long updatedBoardId = boardService.updateBoard(update, boardId);
             if (updatedBoardId != null) {
                 return ResponseEntity.ok(updatedBoardId);
             } else {
@@ -91,5 +97,16 @@ public class BoardController {
         Page<BoardDto> boardPage = boardService.getAllBoardsWithPagination(page, size);
         return new ResponseEntity<>(boardPage, HttpStatus.OK);
     }
+
+    @GetMapping("/my-boards")
+    public ResponseEntity<List<BoardDto>> getMyBoards(@RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
+
+        List<BoardDto> memberBoards = memberService.getBoardsForMember(loggedInEmail);
+
+        return ResponseEntity.ok(memberBoards);
+    }
+
 
 }

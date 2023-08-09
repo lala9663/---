@@ -55,7 +55,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Long updateBoard(Long boardId, UpdateBoardDto update) throws IOException {
+    public Long updateBoard(UpdateBoardDto update, Long boardId) {
         Optional<Board> optBoard = boardRepository.findById(boardId);
 
         if (optBoard.isEmpty()) {
@@ -139,6 +139,8 @@ public class BoardServiceImpl implements BoardService {
         }
         return new PageImpl<>(boardDtoList, pageable, boardPage.getTotalElements());
     }
+
+
 
     private BoardDto convertToBoardDto(Board board) {
         BoardDto boardDto = new BoardDto();
