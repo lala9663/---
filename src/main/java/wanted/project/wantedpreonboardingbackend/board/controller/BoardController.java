@@ -42,9 +42,17 @@ public class BoardController {
 
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @PutMapping("/{boardId}")
-    public ResponseEntity<Long> updateBoard(@PathVariable Long boardId, @RequestBody UpdateBoardDto update) {
+    public ResponseEntity<Long> updateBoard(
+            @PathVariable Long boardId,
+            @RequestBody UpdateBoardDto update,
+            @RequestHeader(name = "Authorization") String authorizationHeader
+    ) {
         try {
-            Long updatedBoardId = boardService.updateBoard(update, boardId);
+            String token = authorizationHeader.substring(7);
+            String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
+
+            Long updatedBoardId = boardService.updateBoard(update, boardId, loggedInEmail);
+
             if (updatedBoardId != null) {
                 return ResponseEntity.ok(updatedBoardId);
             } else {
@@ -97,16 +105,5 @@ public class BoardController {
         Page<BoardDto> boardPage = boardService.getAllBoardsWithPagination(page, size);
         return new ResponseEntity<>(boardPage, HttpStatus.OK);
     }
-
-    @GetMapping("/my-boards")
-    public ResponseEntity<List<BoardDto>> getMyBoards(@RequestHeader(name = "Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
-
-        List<BoardDto> memberBoards = memberService.getBoardsForMember(loggedInEmail);
-
-        return ResponseEntity.ok(memberBoards);
-    }
-
 
 }

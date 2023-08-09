@@ -8,13 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.ReissueRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
+import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
 import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/members")
@@ -22,6 +26,7 @@ import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final Response response;
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 진행한다.")
@@ -55,6 +60,18 @@ public class MemberController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
 //        }
 //    }
+
+    @ApiOperation(value = "해당 멤버의 게시글", notes = "로그인한 멤버의 게시글 목록")
+    @GetMapping("/my-boards")
+    public ResponseEntity<List<BoardDto>> getMyBoards(@RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
+
+        List<BoardDto> memberBoards = memberService.getBoardsForMember(loggedInEmail);
+
+        return ResponseEntity.ok(memberBoards);
+    }
+
 
     @ApiOperation(value = "재발급", notes = "토큰을 재발급한다.")
     @PostMapping("/reissue")

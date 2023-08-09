@@ -176,7 +176,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<BoardDto> getBoardsForMember(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
 
         List<Board> memberBoards = member.getBoards();
         List<BoardDto> boardDTOs = new ArrayList<>();

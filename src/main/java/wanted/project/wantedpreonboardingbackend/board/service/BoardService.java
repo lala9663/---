@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface BoardService {
     void createBoard(CreateBoardDto create, String email);
-    Long updateBoard(UpdateBoardDto update, Long boardId);
+    Long updateBoard(UpdateBoardDto update, Long boardId, String loggedInEmail);
     Long deleteBoard(Long boardId) throws IOException;
     List<BoardDto> getAllBoards();
     BoardDto findBoardById(Long boardId);

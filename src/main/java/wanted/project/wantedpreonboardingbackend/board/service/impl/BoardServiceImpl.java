@@ -55,7 +55,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Long updateBoard(UpdateBoardDto update, Long boardId) {
+    public Long updateBoard(UpdateBoardDto update, Long boardId, String loggedInEmail) {
         Optional<Board> optBoard = boardRepository.findById(boardId);
 
         if (optBoard.isEmpty()) {
@@ -68,14 +68,7 @@ public class BoardServiceImpl implements BoardService {
             throw new BoardException.BoardDeletedException();
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInEmail = authentication.getName();
-
-        // 현재 로그인한 사용자가 작성한 모든 게시글을 조회
-        List<Board> memberBoards = boardRepository.findByMemberEmail(loggedInEmail);
-
-        // 수정하려는 게시글의 작성자와 비교
-        if (!memberBoards.contains(board)) {
+        if (!board.getMember().getEmail().equals(loggedInEmail)) {
             throw new BoardException.BoardNoPermissionException();
         }
 
@@ -86,6 +79,7 @@ public class BoardServiceImpl implements BoardService {
 
         return board.getBoardId();
     }
+
 
     @Override
     @Transactional
