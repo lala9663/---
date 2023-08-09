@@ -19,6 +19,7 @@ import wanted.project.wantedpreonboardingbackend.board.exception.BoardException;
 import wanted.project.wantedpreonboardingbackend.board.repository.BoardRepository;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
+import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
 import wanted.project.wantedpreonboardingbackend.member.repository.MemberRepository;
 
 import java.util.ArrayList;
@@ -34,11 +35,11 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Long createBoard(CreateBoardDto create, Long id, Authentication authentication) throws IOException {
+    public void createBoard(CreateBoardDto create, String email) {
 
-        Member loginMember = memberRepository.findByMemberId(id).get();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException("회원을 찾을 수 없습니다."));
 
-        Board savedBoard = boardRepository.save(create.toEntity(loginMember));
 
 
         if (create.getTitle().length() > 30) {
@@ -49,7 +50,7 @@ public class BoardServiceImpl implements BoardService {
             throw new IllegalArgumentException("게시글 내용은 최대 1000자까지 입력 가능합니다.");
         }
 
-        return savedBoard.getBoardId();
+        Board savedBoard = boardRepository.save(create.toEntity(member));
     }
 
     @Override

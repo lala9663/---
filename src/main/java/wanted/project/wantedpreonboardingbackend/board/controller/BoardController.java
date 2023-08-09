@@ -27,19 +27,11 @@ public class BoardController {
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")
     @PostMapping
-    public ResponseEntity<Long> createBoard(@RequestBody CreateBoardDto create,
-                                            @PathVariable Long boardId,
+    public ResponseEntity<Void> createBoard(@RequestBody CreateBoardDto create,
                                             Authentication authentication) {
-        try {
-            Long id = boardService.createBoard(create, boardId, authentication);
-            return ResponseEntity.ok(boardId);
-        } catch (IllegalArgumentException e) {
-            // 게시글 제목이나 내용이 잘못된 경우 예외 처리
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (Exception e) {
-            // 기타 다른 예외 발생 시 서버 오류로 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        boardService.createBoard(create, authentication.getName());
+
+        return ResponseEntity.ok(null);
     }
 
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")

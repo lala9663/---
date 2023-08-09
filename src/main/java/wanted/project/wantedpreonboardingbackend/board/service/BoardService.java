@@ -11,7 +11,7 @@ import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import java.util.List;
 
 public interface BoardService {
-    Long createBoard(CreateBoardDto create, Long memberId, Authentication authentication) throws IOException;
+    void createBoard(CreateBoardDto create, String email);
     Long updateBoard(Long boardId, UpdateBoardDto update) throws IOException;
     Long deleteBoard(Long boardId) throws IOException;
     List<BoardDto> getAllBoards();
