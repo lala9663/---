@@ -174,6 +174,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public List<BoardDto> getBoardsForMember(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
@@ -182,12 +183,14 @@ public class MemberServiceImpl implements MemberService {
         List<BoardDto> boardDTOs = new ArrayList<>();
 
         for (Board board : memberBoards) {
-            BoardDto boardDto = new BoardDto();
-            boardDto.setBoardId(board.getBoardId());
-            boardDto.setTitle(board.getTitle());
-            boardDto.setContent(board.getContent());
+            if (!board.isBoardDeleted()){
+                BoardDto boardDto = new BoardDto();
+                boardDto.setBoardId(board.getBoardId());
+                boardDto.setTitle(board.getTitle());
+                boardDto.setContent(board.getContent());
 
-            boardDTOs.add(boardDto);
+                boardDTOs.add(boardDto);
+            }
         }
 
         return boardDTOs;

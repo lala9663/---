@@ -1,14 +1,11 @@
 package wanted.project.wantedpreonboardingbackend.board.service.impl;
 
-import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDto;
@@ -83,38 +80,45 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Long deleteBoard(Long boardId) throws IOException {
-        Optional<Board> deleteBoard = boardRepository.findById(boardId);
+    public Long deleteBoard(Long boardId, String loggedInEmail) {
+        Optional<Board> optBoard = boardRepository.findById(boardId);
 
-        if (deleteBoard.isEmpty()) {
+        if (optBoard.isEmpty()) {
+            throw new BoardException.BoardNotFoundException();
+        }
+
+        Board board = optBoard.get();
+
+        if (board.isDeleted()) {
             throw new BoardException.BoardDeletedException();
         }
 
-        Board board = deleteBoard.get();
-        Member member = board.getMember();
-        board.delete();
-
-        try {
-            boardRepository.save(board);
-        } catch (Exception e) {
-            throw new BoardException.FailedException("삭제 후 저장 실패");
+        if (!board.getMember().getEmail().equals(loggedInEmail)) {
+            throw new BoardException.BoardNoPermissionException();
         }
-        return boardId;
+
+        board.setBoardDeleted(true); // 논리적 삭제 상태로 변경
+        boardRepository.save(board);
+
+        return board.getBoardId();
     }
 
     @Override
     public List<BoardDto> getAllBoards() {
-        List<Board> boards = boardRepository.findAll();
+        List<Board> boards = boardRepository.findAllByBoardDeletedFalse();
         List<BoardDto> boardDtoList = new ArrayList<>();
+
         for (Board board : boards) {
-            boardDtoList.add(convertToBoardDto(board));
+            BoardDto boardDto = convertToBoardDto(board);
+            boardDtoList.add(boardDto);
         }
+
         return boardDtoList;
     }
 
     @Override
     public BoardDto findBoardById(Long boardId) {
-        Board board = boardRepository.findById(boardId).orElse(null);
+        Board board = boardRepository.findByBoardIdAndBoardDeletedFalse(boardId);
 
         if (board != null) {
             return convertToBoardDto(board);
@@ -123,11 +127,13 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+
     @Override
     public Page<BoardDto> getAllBoardsWithPagination(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boardPage = boardRepository.findAll(pageable);
         List<BoardDto> boardDtoList = new ArrayList<>();
+
         for (Board board : boardPage.getContent()) {
             boardDtoList.add(convertToBoardDto(board));
         }

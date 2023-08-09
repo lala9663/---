@@ -13,6 +13,7 @@ import wanted.project.wantedpreonboardingbackend.board.dto.request.CreateBoardDt
 import wanted.project.wantedpreonboardingbackend.board.dto.request.UpdateBoardDto;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import wanted.project.wantedpreonboardingbackend.board.entity.Board;
+import wanted.project.wantedpreonboardingbackend.board.exception.BoardException;
 import wanted.project.wantedpreonboardingbackend.board.service.BoardService;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.MemberDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
@@ -63,20 +64,24 @@ public class BoardController {
         }
     }
 
-    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다.")
-    @DeleteMapping("/{boardId}")
-    public ResponseEntity<Long> deleteBoard(@PathVariable Long boardId) {
+    @ApiOperation(value = "게시글 논리적 삭제", notes = "게시글을 논리적으로 삭제한다.")
+    @PutMapping("/{boardId}/delete")
+    public ResponseEntity<String> deleteBoard(@PathVariable Long boardId, @RequestHeader(name = "Authorization") String authorizationHeader) {
         try {
-            Long deletedBoardId = boardService.deleteBoard(boardId);
-            if (deletedBoardId != null) {
-                return ResponseEntity.ok(deletedBoardId);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            String token = authorizationHeader.substring(7);
+            String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
+
+            Long deletedBoardId = boardService.deleteBoard(boardId, loggedInEmail);
+            return ResponseEntity.ok("게시글이 성공적으로 논리적으로 삭제되었습니다.");
+        } catch (BoardException.BoardNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+        } catch (BoardException.BoardDeletedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 삭제된 게시글입니다.");
+        } catch (BoardException.BoardNoPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
         }
     }
+
 
     @ApiOperation(value = "게시글 전체 조회", notes = "게시글을 조회한다.")
     @GetMapping("/all")
