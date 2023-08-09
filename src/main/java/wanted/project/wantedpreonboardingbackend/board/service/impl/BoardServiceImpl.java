@@ -129,9 +129,10 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
+    @Transactional
     public Page<BoardDto> getAllBoardsWithPagination(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Board> boardPage = boardRepository.findAll(pageable);
+        Page<Board> boardPage = boardRepository.findAllByBoardDeletedFalse(pageable);
         List<BoardDto> boardDtoList = new ArrayList<>();
 
         for (Board board : boardPage.getContent()) {
