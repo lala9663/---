@@ -22,25 +22,28 @@ public class Member extends BaseTime implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
-
     @Column
     private String email;
-
     @Column
     private String password;
+    @Column
+    private String phone;
     @Column
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> boards = new ArrayList<>();
 
-    // 게시판 추가 메소드
+
+
     public void addBoard(Board board) {
         this.boards.add(board);
         board.setMember(this);
     }
+
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -49,8 +52,6 @@ public class Member extends BaseTime implements UserDetails {
         }
         return authorities;
     }
-
-
     @Override
     public String getUsername() {
         return email;

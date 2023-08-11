@@ -16,10 +16,7 @@ import org.springframework.util.ObjectUtils;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.board.repository.BoardRepository;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.ReissueRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.request.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.MemberDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.entity.Authority;
@@ -34,6 +31,7 @@ import wanted.project.wantedpreonboardingbackend.security.util.SecurityUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -70,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.builder()
                         .email(signUp.getEmail())
                         .password(passwordEncoder.encode(signUp.getPassword()))
+                        .phone(signUp.getPhone())
                         .roles(Collections.singletonList(Authority.ROLE_USER.name()))
                         .build();
         memberRepository.save(member);
@@ -196,6 +195,39 @@ public class MemberServiceImpl implements MemberService {
         return boardDTOs;
     }
 
+    @Transactional
+    @Override
+    public String findPassword(FindPasswordRequestDto find) {
+        Member member = memberRepository.findByEmailAndPhone(find.getEmail(), find.getPhone());
+        if (member == null) {
+            throw new MemberException("해당하는 회원이 없습니다.");
+        }
+
+        String temporaryPassword = generateTemporaryPassword();
+
+        member.setPassword(passwordEncoder.encode(temporaryPassword));
+        memberRepository.save(member);
+
+        return temporaryPassword;
+    }
+
+    @Override
+    @Transactional
+    public String changePassword(String email, ChangePasswordRequestDto request) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException("회원을 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
+            throw new MemberException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        String newPassword = passwordEncoder.encode(request.getNewPassword());
+        member.setPassword(newPassword);
+        memberRepository.save(member);
+
+        return newPassword;
+    }
+
 
     // 이메일 유효성 검사
     private boolean isValidEmail(String email) {
@@ -218,6 +250,19 @@ public class MemberServiceImpl implements MemberService {
     private boolean isMatchesPassword(String password, String encryptedPassword) {
         // 비밀번호를 복호화하여 일치 여부 확인
         return passwordEncoder.matches(password, encryptedPassword);
+    }
+
+    private String generateTemporaryPassword() {
+        // 임시 비밀번호 생성 로직을 구현 (예: 랜덤 문자열 생성)
+        // 이 예시에서는 8자의 랜덤 문자열을 생성하는 방법을 사용
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder newPassword = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(characters.length());
+            newPassword.append(characters.charAt(index));
+        }
+        return newPassword.toString();
     }
 
 

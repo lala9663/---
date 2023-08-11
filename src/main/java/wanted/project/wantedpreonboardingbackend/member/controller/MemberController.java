@@ -5,15 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LoginRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.LogoutRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.ReissueRequestDto;
-import wanted.project.wantedpreonboardingbackend.member.dto.request.SignUpRequestDto;
+import wanted.project.wantedpreonboardingbackend.member.dto.request.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
+import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
 import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
 import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
@@ -60,6 +60,31 @@ public class MemberController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed");
 //        }
 //    }
+
+    @ApiOperation(value = "비밀번호 재발급", notes = "아이디와 번호를 통한 비밀번호 재발급")
+    @PostMapping("/findMember")
+    public ResponseEntity<String> findPassword(@RequestBody FindPasswordRequestDto find) {
+        try {
+            String temporaryPassword = memberService.findPassword(find);
+            return ResponseEntity.ok(temporaryPassword);
+        } catch (MemberException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
+    }
+
+    @ApiOperation(value = "비밀번호 변경", notes = "비밀번호를 변경합니다.")
+    @PutMapping("/my-page/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequestDto request,
+                                                 @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7); // "Bearer " 접두사 제거
+        String loggedInEmail = jwtTokenProvider.getMemberEmailFromToken(token);
+
+        memberService.changePassword(loggedInEmail, request);
+        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+    }
+
 
     @ApiOperation(value = "해당 멤버의 게시글", notes = "로그인한 멤버의 게시글 목록")
     @GetMapping("/my-boards")
