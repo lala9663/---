@@ -37,17 +37,14 @@ public class BoardServiceImpl implements BoardService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException("회원을 찾을 수 없습니다."));
 
-
-
-        if (create.getTitle().length() > 30) {
-            throw new IllegalArgumentException("게시글 제목은 최대 100자까지 입력 가능합니다.");
+        if (!isValidTitle(create.getTitle())) {
+            throw new BoardException("게시글 제목은 최대 100자까지 입력 가능합니다.");
+        }
+        if (!isValidContent(create.getContent())) {
+            throw new BoardException("게시글 내용은 최대 1000자까지 입력 가능합니다.");
         }
 
-        if (create.getContent().length() > 1000) {
-            throw new IllegalArgumentException("게시글 내용은 최대 1000자까지 입력 가능합니다.");
-        }
-
-        Board savedBoard = boardRepository.save(create.toEntity(member));
+        boardRepository.save(create.toEntity(member));
     }
 
     @Override
@@ -120,11 +117,14 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto findBoardById(Long boardId) {
         Board board = boardRepository.findByBoardIdAndBoardDeletedFalse(boardId);
 
-        if (board != null) {
-            return convertToBoardDto(board);
-        } else {
-            return null;
+        if (board == null) {
+            throw new BoardException("해당 게시판이 없습니다.");
         }
+        if (board.isBoardDeleted()) {
+            throw new BoardException("삭제된 게시판입니다.");
+        }
+
+        return convertToBoardDto(board);
     }
 
 
@@ -141,14 +141,18 @@ public class BoardServiceImpl implements BoardService {
         return new PageImpl<>(boardDtoList, pageable, boardPage.getTotalElements());
     }
 
-
-
     private BoardDto convertToBoardDto(Board board) {
         BoardDto boardDto = new BoardDto();
         boardDto.setBoardId(board.getBoardId());
         boardDto.setTitle(board.getTitle());
         boardDto.setContent(board.getContent());
         return boardDto;
+    }
+    private boolean isValidTitle(String title) {
+        return title.length() <= 100;
+    }
+    private boolean isValidContent(String content) {
+        return content.length() <= 1000;
     }
 
 

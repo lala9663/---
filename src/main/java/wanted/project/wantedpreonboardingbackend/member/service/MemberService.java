@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface MemberService {
     void signup(SignUpRequestDto singUp);
-//    ResponseEntity<?> login(LoginRequestDto login);
     TokenResponseDto login(LoginRequestDto login);
     ResponseEntity<?> reissue(ReissueRequestDto reissue);
     ResponseEntity<?> authority();

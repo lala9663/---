@@ -17,7 +17,6 @@ import wanted.project.wantedpreonboardingbackend.board.dto.response.BoardDto;
 import wanted.project.wantedpreonboardingbackend.board.entity.Board;
 import wanted.project.wantedpreonboardingbackend.board.repository.BoardRepository;
 import wanted.project.wantedpreonboardingbackend.member.dto.request.*;
-import wanted.project.wantedpreonboardingbackend.member.dto.response.MemberDto;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.entity.Authority;
 import wanted.project.wantedpreonboardingbackend.member.entity.Member;
@@ -39,12 +38,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
-    private final BoardRepository boardRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final Response response;
     private final RedisTemplate redisTemplate;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
 
     /**
@@ -73,31 +70,6 @@ public class MemberServiceImpl implements MemberService {
                         .build();
         memberRepository.save(member);
     }
-
-    /**
-     * 로그인
-     * @param login
-     * @return
-     */
-//    @Override
-//    @Transactional
-//    public ResponseEntity<?> login(LoginRequestDto login) {
-//        Member member = memberRepository.findByEmail(login.getEmail())
-//                .orElseThrow(MemberException::new);
-//        if (!isMatchesPassword(login.getPassword(), member.getPassword())) {
-//            throw new MemberException("비밀번호가 일치하지 않습니다.");
-//        }
-//        // 인증 성공 시 토큰 생성 및 반환
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), member.getAuthorities());
-//        TokenResponseDto tokenResponse = jwtTokenProvider.generateToken(authentication);
-//
-//        redisTemplate.opsForValue()
-//                .set("RT:" + authentication.getName(), tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-//
-//
-//        // 로그인 성공 응답에 토큰 정보 추가하여 반환
-//        return response.success(tokenResponse, "로그인에 성공했습니다.", HttpStatus.OK);
-//    }
 
     @Override
     @Transactional

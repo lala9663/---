@@ -34,16 +34,18 @@ public class BoardController {
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")
     @PostMapping
-    public ResponseEntity<Void> createBoard(@RequestBody CreateBoardDto create,
-                                            Authentication authentication) {
-        boardService.createBoard(create, authentication.getName());
-
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> createBoard(@RequestBody CreateBoardDto create, Authentication authentication) {
+        try {
+            boardService.createBoard(create, authentication.getName());
+            return response.success("게시판이 생성되었습니다.");
+        } catch (BoardException e) {
+            return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @PutMapping("/{boardId}")
-    public ResponseEntity<Long> updateBoard(
+    public ResponseEntity<?> updateBoard(
             @PathVariable Long boardId,
             @RequestBody UpdateBoardDto update,
             @RequestHeader(name = "Authorization") String authorizationHeader
@@ -55,12 +57,12 @@ public class BoardController {
             Long updatedBoardId = boardService.updateBoard(update, boardId, loggedInEmail);
 
             if (updatedBoardId != null) {
-                return ResponseEntity.ok(updatedBoardId);
+                return response.success("수정되었습니다.");
             } else {
                 return ResponseEntity.notFound().build();
             }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (BoardException e) {
+            return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -92,12 +94,12 @@ public class BoardController {
 
     @ApiOperation(value = "특정 게시글 조회", notes = "게시글을 조회한다.")
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardDto> getBoardById(@PathVariable Long boardId) {
-        BoardDto boardDto = boardService.findBoardById(boardId);
-        if (boardDto != null) {
+    public ResponseEntity<?> getBoardById(@PathVariable Long boardId) {
+        try {
+            BoardDto boardDto = boardService.findBoardById(boardId);
             return new ResponseEntity<>(boardDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (BoardException e) {
+            return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
