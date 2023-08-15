@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +13,7 @@ import wanted.project.wantedpreonboardingbackend.member.dto.request.*;
 import wanted.project.wantedpreonboardingbackend.member.dto.response.Response;
 import wanted.project.wantedpreonboardingbackend.member.exception.MemberException;
 import wanted.project.wantedpreonboardingbackend.member.service.MemberService;
+import wanted.project.wantedpreonboardingbackend.security.dto.TokenResponseDto;
 import wanted.project.wantedpreonboardingbackend.security.jwt.JwtTokenProvider;
 import wanted.project.wantedpreonboardingbackend.security.lib.Helper;
 
@@ -31,23 +30,28 @@ public class MemberController {
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 진행한다.")
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody @Validated SignUpRequestDto signUp, Errors errors) {
-
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
+    public ResponseEntity<?> signUp(@RequestBody @Validated SignUpRequestDto signUp) {
+        try {
+            memberService.signup(signUp);
+            return response.success("회원가입이 완료되었습니다.");
+        } catch (MemberException e) {
+            return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-        return memberService.signup(signUp);
     }
+
+
 
     @ApiOperation(value = "로그인", notes = "로그인을 진행한다.")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Validated LoginRequestDto login, Errors errors) {
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
+    public ResponseEntity<?> login(@RequestBody @Validated LoginRequestDto login) {
+        try {
+            TokenResponseDto tokenResponse = memberService.login(login);
+            return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+        } catch (MemberException e) {
+            return response.fail(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return memberService.login(login);
     }
+
 
 //    @ApiOperation(value = "로그아웃", notes = "로그아웃을 진행한다.")
 //    @PostMapping("/logout")

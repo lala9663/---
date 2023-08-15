@@ -54,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-    public ResponseEntity<?> signup(SignUpRequestDto signUp) {
+    public void signup(SignUpRequestDto signUp) {
 
         if (isDuplicatedEmail(signUp.getEmail())) {
             throw new MemberException("이미 존재하는 회원입니다.");
@@ -72,9 +72,6 @@ public class MemberServiceImpl implements MemberService {
                         .roles(Collections.singletonList(Authority.ROLE_USER.name()))
                         .build();
         memberRepository.save(member);
-
-
-        return response.success("회원가입 성공했습니다.");
     }
 
     /**
@@ -82,9 +79,32 @@ public class MemberServiceImpl implements MemberService {
      * @param login
      * @return
      */
+//    @Override
+//    @Transactional
+//    public ResponseEntity<?> login(LoginRequestDto login) {
+//        Member member = memberRepository.findByEmail(login.getEmail())
+//                .orElseThrow(MemberException::new);
+//        if (!isMatchesPassword(login.getPassword(), member.getPassword())) {
+//            throw new MemberException("비밀번호가 일치하지 않습니다.");
+//        }
+//        // 인증 성공 시 토큰 생성 및 반환
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), member.getAuthorities());
+//        TokenResponseDto tokenResponse = jwtTokenProvider.generateToken(authentication);
+//
+//        redisTemplate.opsForValue()
+//                .set("RT:" + authentication.getName(), tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+//
+//
+//        // 로그인 성공 응답에 토큰 정보 추가하여 반환
+//        return response.success(tokenResponse, "로그인에 성공했습니다.", HttpStatus.OK);
+//    }
+
     @Override
     @Transactional
-    public ResponseEntity<?> login(LoginRequestDto login) {
+    public TokenResponseDto login(LoginRequestDto login) {
+        if (!isEmailExists(login.getEmail())) {
+            throw new MemberException("존재하지 않는 아이디입니다.");
+        }
         Member member = memberRepository.findByEmail(login.getEmail())
                 .orElseThrow(MemberException::new);
         if (!isMatchesPassword(login.getPassword(), member.getPassword())) {
@@ -97,9 +117,7 @@ public class MemberServiceImpl implements MemberService {
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-
-        // 로그인 성공 응답에 토큰 정보 추가하여 반환
-        return response.success(tokenResponse, "로그인에 성공했습니다.", HttpStatus.OK);
+        return tokenResponse; // 토큰 정보만 반환
     }
 
 
@@ -229,6 +247,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+
+
     // 이메일 유효성 검사
     private boolean isValidEmail(String email) {
         String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
@@ -244,6 +264,12 @@ public class MemberServiceImpl implements MemberService {
     // 이메일 중복 검사
     private boolean isDuplicatedEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
+    }
+
+    // 아이디 확인 검사
+    @Override
+    public boolean isEmailExists(String email) {
+        return memberRepository.existsByEmail(email);
     }
 
     // 비밀번호 일치 검사

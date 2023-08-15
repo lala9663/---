@@ -35,14 +35,10 @@ public class Member extends BaseTime implements UserDetails {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> boards = new ArrayList<>();
 
-
-
     public void addBoard(Board board) {
         this.boards.add(board);
         board.setMember(this);
     }
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
