@@ -12,6 +12,7 @@
 ![erd](https://github.com/lala9663/wanted-pre-onboarding-backend/assets/105348713/c9cfd82a-3118-401d-88d4-9e95d2012e33)
 
 ### 데모 영상
+![데모 영상](https://youtu.be/A3xH2YtrMq4)
 
 ### 구현 방법 및 이유
 
