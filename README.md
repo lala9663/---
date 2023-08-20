@@ -1,5 +1,3 @@
-## 지원자: 김태윤
-
 ## Index
 1. [테이블 구조](#테이블-구조)
 2. [데모 영상](#데모-영상)
@@ -7,10 +5,8 @@
 4. [API 명세서](#api-명세서)
 
 ## 테이블 구조
-![erd](https://github.com/lala9663/wanted-pre-onboarding-backend/assets/105348713/c9cfd82a-3118-401d-88d4-9e95d2012e33)
 
 ## 데모 영상
-[데모 영상](https://youtu.be/A3xH2YtrMq4)
 
 ## 구현 방법 및 이유  
 작은 규모라 레이어드 아키텍처로 만들었습니다.  
