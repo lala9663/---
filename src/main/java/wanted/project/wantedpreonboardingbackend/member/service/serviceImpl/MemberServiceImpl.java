@@ -66,6 +66,8 @@ public class MemberServiceImpl implements MemberService {
                         .email(signUp.getEmail())
                         .password(passwordEncoder.encode(signUp.getPassword()))
                         .phone(signUp.getPhone())
+                        .name(signUp.getName())
+                        .age(signUp.getAge())
                         .roles(Collections.singletonList(Authority.ROLE_USER.name()))
                         .build();
         memberRepository.save(member);

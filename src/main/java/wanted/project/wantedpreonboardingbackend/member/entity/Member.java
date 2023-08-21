@@ -29,6 +29,10 @@ public class Member extends BaseTime implements UserDetails {
     @Column
     private String phone;
     @Column
+    private String name;
+    @Column
+    private int age;
+    @Column
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
