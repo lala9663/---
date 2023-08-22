@@ -1,4 +1,4 @@
-package wanted.project.wantedpreonboardingbackend.lottery.entity;
+package wanted.project.wantedpreonboardingbackend.purchase.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-public class LottoPurchase {
+public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long purchaseId;
@@ -21,13 +21,12 @@ public class LottoPurchase {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member; // 회원 정보
-    @ManyToOne
-    @JoinColumn(name = "lotto_round_id")
-    private LottoRound lottoRound; // 추첨 회차 정보
+
+    @OneToMany(mappedBy = "purchase")
+    private List<LottoPurchaseWinner> lottoPurchaseWinners; // 브릿지 테이블과 연결
+
     @Column
     private int totalPrice; // 총 구매 가격
-    @OneToMany(mappedBy = "lottoPurchase")
-    private List<Lotto> lottos; // 구매한 로또 리스트
 
     @CreatedDate
     private LocalDateTime purchaseDate = LocalDateTime.now();

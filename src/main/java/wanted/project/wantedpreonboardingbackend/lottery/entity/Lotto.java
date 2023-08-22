@@ -2,6 +2,8 @@ package wanted.project.wantedpreonboardingbackend.lottery.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import wanted.project.wantedpreonboardingbackend.purchase.entity.Purchase;
+import wanted.project.wantedpreonboardingbackend.winner.entity.Winner;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,8 +35,8 @@ public class Lotto {
     private LocalDateTime createDate = LocalDateTime.now();
     @ManyToOne
     @JoinColumn(name = "lotto_round_id")
-    private LottoRound lottoRound;
+    private Winner winner;
     @ManyToOne
     @JoinColumn(name = "lotto_purchase_id")
-    private LottoPurchase lottoPurchase;
+    private Purchase purchase;
 }

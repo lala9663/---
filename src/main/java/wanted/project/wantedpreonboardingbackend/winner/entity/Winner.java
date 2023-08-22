@@ -1,6 +1,7 @@
-package wanted.project.wantedpreonboardingbackend.lottery.entity;
+package wanted.project.wantedpreonboardingbackend.winner.entity;
 
 import lombok.*;
+import wanted.project.wantedpreonboardingbackend.purchase.entity.LottoPurchaseWinner;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,13 +12,14 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-public class LottoRound {
+public class Winner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lottoRoundId;
+    private Long winnerId;
 
     @Column
     private LocalDate roundDate; // 추첨 회차 날짜
+
     @Column
     private int winningBall1; // 1등 번호 1
     @Column
@@ -30,6 +32,7 @@ public class LottoRound {
     private int winningBall5; // 1등 번호 5
     @Column
     private int winningBall6; // 1등 번호 6
+
     @Column
     private int firstPrizeAmount; // 1등 당첨금
     @Column
@@ -40,7 +43,7 @@ public class LottoRound {
     private int fourthPrizeAmount; // 4등 당첨금
     @Column
     private int fifthPrizeAmount; // 5등 당첨금
-    @OneToMany(mappedBy = "lottoRound")
-    private List<LottoPurchase> lottoPurchases;
 
+    @OneToMany(mappedBy = "winner")
+    private List<LottoPurchaseWinner> lottoPurchaseWinners; // 브릿지 테이블과 연결
 }
