@@ -8,15 +8,18 @@ import wanted.project.wantedpreonboardingbackend.winner.entity.Winner;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Entity
+@Builder
 public class Lotto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lottoId;
+    @Column(columnDefinition = "integer default 1")
+    private int round;
     @Column
     private int ball1;
     @Column
@@ -30,7 +33,10 @@ public class Lotto {
     @Column
     private int ball6;
     @Column
-    private int price;
+    private int price = PRICE_PER_TICKET;
+
+    public static final int PRICE_PER_TICKET = 3000;
+
     @CreatedDate
     private LocalDateTime createDate = LocalDateTime.now();
     @ManyToOne
