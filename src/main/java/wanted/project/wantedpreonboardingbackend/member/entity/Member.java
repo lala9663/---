@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import wanted.project.wantedpreonboardingbackend.board.entity.Board;
+import wanted.project.wantedpreonboardingbackend.winner.entity.Winner;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ public class Member extends BaseTime implements UserDetails {
     private List<String> roles = new ArrayList<>();
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> boards = new ArrayList<>();
-
+    @OneToMany(mappedBy = "member")
+    private List<Winner> winnings = new ArrayList<>();
     public void addBoard(Board board) {
         this.boards.add(board);
         board.setMember(this);

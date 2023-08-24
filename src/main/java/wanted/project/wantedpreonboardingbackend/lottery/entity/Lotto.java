@@ -2,11 +2,12 @@ package wanted.project.wantedpreonboardingbackend.lottery.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import wanted.project.wantedpreonboardingbackend.purchase.entity.Purchase;
 import wanted.project.wantedpreonboardingbackend.winner.entity.Winner;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,15 +35,11 @@ public class Lotto {
     private int ball6;
     @Column
     private int price = PRICE_PER_TICKET;
-
     public static final int PRICE_PER_TICKET = 3000;
-
     @CreatedDate
     private LocalDateTime createDate = LocalDateTime.now();
-    @ManyToOne
-    @JoinColumn(name = "lotto_round_id")
-    private Winner winner;
-    @ManyToOne
-    @JoinColumn(name = "lotto_purchase_id")
-    private Purchase purchase;
+    @OneToMany(mappedBy = "lotto")
+    private List<Winner> winners = new ArrayList<>();
+
+
 }

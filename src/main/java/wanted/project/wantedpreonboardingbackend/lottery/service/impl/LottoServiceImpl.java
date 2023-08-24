@@ -20,8 +20,8 @@ public class LottoServiceImpl implements LottoService {
     private final LottoRepository lottoRepository;
 
     @Override
-    public CreateLottoRequestDto createLotto() {
-        int nextRound = lottoRepository.findMaxRound() + 1;
+    public CreateLottoRequestDto createLotto(int quantity) {
+        int nextRound = lottoRepository.findMaxRound() + 1; // 로직에 따라 추첨 회차 계산
 
         List<Integer> lottoNumbers = generateLottoNumbers();
 
@@ -33,8 +33,9 @@ public class LottoServiceImpl implements LottoService {
         createdLotto.setBall4(lottoNumbers.get(3));
         createdLotto.setBall5(lottoNumbers.get(4));
         createdLotto.setBall6(lottoNumbers.get(5));
-        createdLotto.setPrice(Lotto.PRICE_PER_TICKET);
+        createdLotto.setPrice(3000);
 
+        // 저장 후 생성된 로또 엔티티 반환
         Lotto savedLotto = lottoRepository.save(createdLotto.toEntity());
 
         CreateLottoRequestDto lottoDto = new CreateLottoRequestDto();
@@ -64,4 +65,3 @@ public class LottoServiceImpl implements LottoService {
         return lottoNumbers;
     }
 }
-

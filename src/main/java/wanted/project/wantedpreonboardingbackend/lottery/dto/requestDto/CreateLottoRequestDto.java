@@ -3,6 +3,8 @@ package wanted.project.wantedpreonboardingbackend.lottery.dto.requestDto;
 import lombok.*;
 import wanted.project.wantedpreonboardingbackend.lottery.entity.Lotto;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,7 +13,6 @@ import wanted.project.wantedpreonboardingbackend.lottery.entity.Lotto;
 @Builder
 public class CreateLottoRequestDto {
     private Long memberId;
-
     private int round;
     private int ball1;
     private int ball2;
