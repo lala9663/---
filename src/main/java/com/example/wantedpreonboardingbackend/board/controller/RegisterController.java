@@ -20,24 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegisterController {
     private final JobPostService jobPostService;
 
-    @Operation(summary = " 직무 등록 요청", description = "해당 직무가 등록됩니다.", tags = {"Register Controller"})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
-    @PostMapping("/registerStack")
-    public ResponseEntity<String> registerJob(RegisterStackDto registerStackDto) {
-        try {
-            long stackId = jobPostService.addStack(registerStackDto);
-            return ResponseEntity.ok("해당 직무가 등록되었습니다. 직무 번호는: " + stackId + " 입니다.");
-        } catch (DataAccessException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("등록에 실패했습니다.");
-        }
-    }
-
-
 //        @Operation(summary = " 채용공고 등록 요청", description = "채용공고가 등록됩니다.", tags = {"Register Controller"})
 //    @ApiResponses({
 //            @ApiResponse(responseCode = "200", description = "OK"),
