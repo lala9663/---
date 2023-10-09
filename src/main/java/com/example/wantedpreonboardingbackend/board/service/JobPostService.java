@@ -9,4 +9,8 @@ public interface JobPostService {
     long addRegisterJob(RegisterJobDto registerJobDto);
 
     List<JobPost> getAllJobs();
+    List<JobPost> getJobsByCompany(String companyName);
+
+    List<JobPost> getJobsByPosition(String position);
+
 }

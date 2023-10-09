@@ -33,6 +33,17 @@ public class JobPostServiceImpl implements JobPostService {
         return jobPostRepository.findAll();
     }
 
+    @Override
+    public List<JobPost> getJobsByCompany(String companyName) {
+        return jobPostRepository.findByCompanyName(companyName);
+
+    }
+
+    @Override
+    public List<JobPost> getJobsByPosition(String position) {
+        return jobPostRepository.findByPosition(position);
+    }
+
 
     public boolean isDuplicateJob(String companyName, String position) {
         return jobPostRepository.existsByCompanyNameAndPosition(companyName, position);
