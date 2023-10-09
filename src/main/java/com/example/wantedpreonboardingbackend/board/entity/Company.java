@@ -26,5 +26,5 @@ public class Company extends BaseEntity {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
     @OneToMany
-    private Set<Stack> technologies = new HashSet<>();
+    private Set<Stack> stacks = new HashSet<>();
 }
