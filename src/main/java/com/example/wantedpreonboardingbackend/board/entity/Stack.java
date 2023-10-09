@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "stack")
@@ -22,7 +24,4 @@ public class Stack {
     @Column(name = "stack_name", columnDefinition = "VARCHAR(10)")
     private String stackName;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
 }

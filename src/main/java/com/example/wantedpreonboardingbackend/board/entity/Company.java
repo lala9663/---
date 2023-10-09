@@ -4,8 +4,8 @@ import com.example.wantedpreonboardingbackend.global.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "company")
@@ -21,13 +21,10 @@ public class Company extends BaseEntity {
     private Long companyId;
     @Column(name = "company_name", columnDefinition = "VARCHAR(50)")
     private String companyName;
-    @Column(name = "position", columnDefinition = "VARCHAR(30)")
-    private String position;
     @Column(name = "reward", columnDefinition = "INT")
     private int reward;
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    @OneToMany(mappedBy = "company")
-    @Column(name = "stack", columnDefinition = "VARCHAR(30)")
-    private List<Stack> stacks = new ArrayList<>();
+    @OneToMany
+    private Set<Stack> technologies = new HashSet<>();
 }
