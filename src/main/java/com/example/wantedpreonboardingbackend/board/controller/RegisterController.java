@@ -1,6 +1,7 @@
 package com.example.wantedpreonboardingbackend.board.controller;
 
 import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
+import com.example.wantedpreonboardingbackend.board.entity.JobPost;
 import com.example.wantedpreonboardingbackend.board.service.JobPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,9 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/jobPost")
@@ -37,4 +41,22 @@ public class RegisterController {
         }
     }
 
+    @Operation(summary = " 공고 전체 조회", description = "전체 조회합니다.", tags = {"Register Controller"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @GetMapping("/list")
+    public ResponseEntity<List<JobPost>> getAllJobs() {
+        try {
+            List<JobPost> jobPosts = jobPostService.getAllJobs();
+            return ResponseEntity.ok(jobPosts);
+        } catch (RuntimeException re) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

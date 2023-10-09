@@ -8,6 +8,8 @@ import com.example.wantedpreonboardingbackend.board.service.JobPostService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class JobPostServiceImpl implements JobPostService {
@@ -24,6 +26,11 @@ public class JobPostServiceImpl implements JobPostService {
         jobPostRepository.save(jobPost);
 
         return jobPost.getCompanyPostId();
+    }
+
+    @Override
+    public List<JobPost> getAllJobs() {
+        return jobPostRepository.findAll();
     }
 
 
