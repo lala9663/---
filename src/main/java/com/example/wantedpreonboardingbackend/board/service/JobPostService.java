@@ -1,7 +1,8 @@
 package com.example.wantedpreonboardingbackend.board.service;
 
-import com.example.wantedpreonboardingbackend.board.dto.RegisterStackDto;
+import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
 
 public interface JobPostService {
-    long addStack(RegisterStackDto registerStackDto);
+
+    long addRegisterJob(RegisterJobDto registerJobDto);
 }

@@ -13,18 +13,20 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-public class Company extends BaseEntity {
+public class JobPost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id", columnDefinition = "BIGINT")
-    private Long companyId;
+    @Column(name = "company_post_id", columnDefinition = "BIGINT")
+    private Long companyPostId;
     @Column(name = "company_name", columnDefinition = "VARCHAR(50)")
     private String companyName;
+    @Column(name = "position", columnDefinition = "VARCHAR(30)")
+    private String position;
     @Column(name = "reward", columnDefinition = "INT")
     private int reward;
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    @OneToMany
-    private Set<Stack> stacks = new HashSet<>();
+    @ElementCollection
+    private Set<String> stacks = new HashSet<>();
 }

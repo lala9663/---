@@ -1,9 +1,9 @@
 package com.example.wantedpreonboardingbackend.board.service.impl;
 
-import com.example.wantedpreonboardingbackend.board.dto.RegisterStackDto;
-import com.example.wantedpreonboardingbackend.board.entity.Stack;
+import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
+import com.example.wantedpreonboardingbackend.board.entity.JobPost;
+import com.example.wantedpreonboardingbackend.board.exception.JobPostException;
 import com.example.wantedpreonboardingbackend.board.repository.JobPostRepository;
-import com.example.wantedpreonboardingbackend.board.repository.StackRepository;
 import com.example.wantedpreonboardingbackend.board.service.JobPostService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,16 +12,22 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class JobPostServiceImpl implements JobPostService {
     private final JobPostRepository jobPostRepository;
-    private final StackRepository stackRepository;
+
     @Override
-    public long addStack(RegisterStackDto registerStackDto) {
-        String stackName = registerStackDto.getStackName();
-        Stack stack = Stack.builder()
-                .stackName(stackName)
-                .build();
+    public long addRegisterJob(RegisterJobDto registerJobDto) {
 
-        Stack savedStack = stackRepository.save(stack);
+        if (isDuplicateJob(registerJobDto.getCompanyName(), registerJobDto.getPosition())) {
+            throw JobPostException.duplicateJob();
+        }
 
-        return savedStack.getStackId();
+        JobPost jobPost = registerJobDto.toEntity();
+        jobPostRepository.save(jobPost);
+
+        return jobPost.getCompanyPostId();
+    }
+
+
+    public boolean isDuplicateJob(String companyName, String position) {
+        return jobPostRepository.existsByCompanyNameAndPosition(companyName, position);
     }
 }
