@@ -1,6 +1,7 @@
 package com.example.wantedpreonboardingbackend.board.service.impl;
 
 import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
+import com.example.wantedpreonboardingbackend.board.dto.UpdateJobDto;
 import com.example.wantedpreonboardingbackend.board.entity.JobPost;
 import com.example.wantedpreonboardingbackend.board.exception.JobPostException;
 import com.example.wantedpreonboardingbackend.board.repository.JobPostRepository;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class JobPostServiceImpl implements JobPostService {
     private final JobPostRepository jobPostRepository;
+
 
     @Override
     public long addRegisterJob(RegisterJobDto registerJobDto) {
@@ -53,6 +55,26 @@ public class JobPostServiceImpl implements JobPostService {
         } else {
             throw JobPostException.NotFoundJobPost();
         }
+    }
+
+    @Override
+    public long updateJob(Long postId, UpdateJobDto updateJobDto) {
+        JobPost existingPost = jobPostRepository.findById(postId)
+                .orElseThrow(JobPostException::NotFoundJobPost);
+
+        JobPost updatedPost = JobPost.builder()
+                .companyName(updateJobDto.getCompanyName())
+                .position(updateJobDto.getPosition())
+                .reward(updateJobDto.getReward())
+                .content(updateJobDto.getContent())
+                .stacks(updateJobDto.getStacks())
+                .build();
+
+        existingPost.updateFrom(updatedPost);
+
+        jobPostRepository.save(existingPost);
+
+        return existingPost.getCompanyPostId();
     }
 
     public boolean isDuplicateJob(String companyName, String position) {

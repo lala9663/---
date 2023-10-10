@@ -1,6 +1,7 @@
 package com.example.wantedpreonboardingbackend.board.controller;
 
 import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
+import com.example.wantedpreonboardingbackend.board.dto.UpdateJobDto;
 import com.example.wantedpreonboardingbackend.board.entity.JobPost;
 import com.example.wantedpreonboardingbackend.board.service.JobPostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -106,5 +108,22 @@ public class RegisterController {
     public ResponseEntity<JobPost> getJobPostById(@PathVariable Long companyPostId) {
         JobPost jobPost = jobPostService.getJobPostDetail(companyPostId);
         return new ResponseEntity<>(jobPost, HttpStatus.OK);
+    }
+
+    @Operation(summary = "채용공고문 수정", description = "공고문을 수정합니다", tags = {"Register Controller"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @PutMapping("/update/{companyPostId}")
+    public ResponseEntity<String> updateJobPost(
+            @PathVariable Long companyPostId,
+            @Valid @RequestBody UpdateJobDto updateJobDto) {
+
+        long updatedPostId = jobPostService.updateJob(companyPostId, updateJobDto);
+
+        return ResponseEntity.ok("채용 공고 업데이트가 완료되었습니다. 업데이트된 포스트 ID: " + updatedPostId);
     }
 }

@@ -28,4 +28,22 @@ public class JobPost {
     private String content;
     @ElementCollection
     private Set<String> stacks = new HashSet<>();
+
+    public void updateFrom(JobPost other) {
+        if (other.getCompanyName() != null) {
+            this.companyName = other.getCompanyName();
+        }
+        if (other.getPosition() != null) {
+            this.position = other.getPosition();
+        }
+        if (other.getReward() != 0) {
+            this.reward = other.getReward();
+        }
+        if (other.getContent() != null) {
+            this.content = other.getContent();
+        }
+        if (other.getStacks() != null) {
+            this.stacks = other.getStacks();
+        }
+    }
 }
