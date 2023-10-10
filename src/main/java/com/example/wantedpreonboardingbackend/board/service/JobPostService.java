@@ -12,5 +12,5 @@ public interface JobPostService {
     List<JobPost> getJobsByCompany(String companyName);
 
     List<JobPost> getJobsByPosition(String position);
-
+    JobPost getJobPostDetail(Long companyPostId);
 }

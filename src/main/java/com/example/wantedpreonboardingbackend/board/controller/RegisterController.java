@@ -94,4 +94,17 @@ public class RegisterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @Operation(summary = "상세 조회", description = "상세 조회합니다.", tags = {"Register Controller"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @GetMapping("/{companyPostId}/details")
+    public ResponseEntity<JobPost> getJobPostById(@PathVariable Long companyPostId) {
+        JobPost jobPost = jobPostService.getJobPostDetail(companyPostId);
+        return new ResponseEntity<>(jobPost, HttpStatus.OK);
+    }
 }

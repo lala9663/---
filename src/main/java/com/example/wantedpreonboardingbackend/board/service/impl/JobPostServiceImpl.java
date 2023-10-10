@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -44,8 +45,18 @@ public class JobPostServiceImpl implements JobPostService {
         return jobPostRepository.findByPosition(position);
     }
 
+    @Override
+    public JobPost getJobPostDetail(Long companyPostId) {
+        Optional<JobPost> jobPostOptional = jobPostRepository.findById(companyPostId);
+        if (jobPostOptional.isPresent()) {
+            return jobPostOptional.get();
+        } else {
+            throw JobPostException.NotFoundJobPost();
+        }
+    }
 
     public boolean isDuplicateJob(String companyName, String position) {
         return jobPostRepository.existsByCompanyNameAndPosition(companyName, position);
     }
+
 }
