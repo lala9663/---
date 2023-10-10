@@ -64,7 +64,7 @@ public class RegisterController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @GetMapping("/list/{companyName}")
+    @GetMapping("/list/company/{companyName}")
     public ResponseEntity<List<JobPost>> getJobsByCompany(@PathVariable String companyName) {
         try {
             List<JobPost> jobPosts = jobPostService.getJobsByCompany(companyName);
@@ -83,7 +83,7 @@ public class RegisterController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @GetMapping("/list/{position}")
+    @GetMapping("/list/position/{position}")
     public ResponseEntity<List<JobPost>> getJobsByPosition(@PathVariable String position) {
         try {
             List<JobPost> jobPosts = jobPostService.getJobsByPosition(position);

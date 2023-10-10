@@ -1,6 +1,5 @@
 package com.example.wantedpreonboardingbackend.board.entity;
 
-import com.example.wantedpreonboardingbackend.global.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-public class JobPost extends BaseEntity {
+public class JobPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
