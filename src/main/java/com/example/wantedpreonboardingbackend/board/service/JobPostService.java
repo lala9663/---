@@ -13,7 +13,7 @@ public interface JobPostService {
 
     List<JobPost> getJobsByPosition(String position);
     JobPost getJobPostDetail(Long companyPostId);
-    long updatePost(Long postId, UpdateJobDto updateJobDto);
-    long deletePost
+    long updatePost(Long companyPostId, UpdateJobDto updateJobDto);
+    long deletePost(Long companyPostId);
 
 }

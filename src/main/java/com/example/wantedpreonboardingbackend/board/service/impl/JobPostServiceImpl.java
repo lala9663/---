@@ -58,8 +58,8 @@ public class JobPostServiceImpl implements JobPostService {
     }
 
     @Override
-    public long updatePost(Long postId, UpdateJobDto updateJobDto) {
-        JobPost existingPost = jobPostRepository.findById(postId)
+    public long updatePost(Long companyPostId, UpdateJobDto updateJobDto) {
+        JobPost existingPost = jobPostRepository.findById(companyPostId)
                 .orElseThrow(JobPostException::NotFoundJobPost);
 
         JobPost updatedPost = JobPost.builder()
@@ -75,6 +75,18 @@ public class JobPostServiceImpl implements JobPostService {
         jobPostRepository.save(existingPost);
 
         return existingPost.getCompanyPostId();
+    }
+
+    @Override
+    public long deletePost(Long companyPostId) {
+        Optional<JobPost> post = jobPostRepository.findById(companyPostId);
+
+        if (post.isEmpty()) {
+            throw JobPostException.NotFoundJobPost();
+        } else {
+            jobPostRepository.delete(post.get());
+        }
+        return companyPostId;
     }
 
     public boolean isDuplicateJob(String companyName, String position) {
