@@ -1,7 +1,6 @@
 package com.example.wantedpreonboardingbackend.board.dto;
 
 
-import com.example.wantedpreonboardingbackend.board.entity.JobPost;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

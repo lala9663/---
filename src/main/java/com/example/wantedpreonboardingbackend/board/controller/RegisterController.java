@@ -122,7 +122,7 @@ public class RegisterController {
             @PathVariable Long companyPostId,
             @Valid @RequestBody UpdateJobDto updateJobDto) {
 
-        long updatedPostId = jobPostService.updateJob(companyPostId, updateJobDto);
+        long updatedPostId = jobPostService.updatePost(companyPostId, updateJobDto);
 
         return ResponseEntity.ok("채용 공고 업데이트가 완료되었습니다. 업데이트된 포스트 ID: " + updatedPostId);
     }

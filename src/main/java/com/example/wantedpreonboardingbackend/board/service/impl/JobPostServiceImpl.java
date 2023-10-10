@@ -58,7 +58,7 @@ public class JobPostServiceImpl implements JobPostService {
     }
 
     @Override
-    public long updateJob(Long postId, UpdateJobDto updateJobDto) {
+    public long updatePost(Long postId, UpdateJobDto updateJobDto) {
         JobPost existingPost = jobPostRepository.findById(postId)
                 .orElseThrow(JobPostException::NotFoundJobPost);
 
