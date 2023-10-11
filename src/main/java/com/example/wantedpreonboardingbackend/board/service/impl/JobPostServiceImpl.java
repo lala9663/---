@@ -7,6 +7,7 @@ import com.example.wantedpreonboardingbackend.board.exception.JobPostException;
 import com.example.wantedpreonboardingbackend.board.repository.JobPostRepository;
 import com.example.wantedpreonboardingbackend.board.service.JobPostService;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class JobPostServiceImpl implements JobPostService {
 
 
     @Override
-    public long addRegisterJob(RegisterJobDto registerJobDto) {
+    public long addRegisterJob(@NotNull RegisterJobDto registerJobDto) {
 
         if (isDuplicateJob(registerJobDto.getCompanyName(), registerJobDto.getPosition())) {
             throw JobPostException.duplicateJob();
