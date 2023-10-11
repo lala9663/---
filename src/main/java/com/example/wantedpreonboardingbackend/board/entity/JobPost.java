@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.board.entity;
 
+import com.example.wantedpreonboardingbackend.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,8 +27,12 @@ public class JobPost {
     private int reward;
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> stacks = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "apply_user")
+    private User user;
 
     public void updateFrom(JobPost other) {
         if (other.getCompanyName() != null) {
