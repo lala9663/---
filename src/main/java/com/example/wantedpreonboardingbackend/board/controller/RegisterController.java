@@ -106,8 +106,14 @@ public class RegisterController {
     })
     @GetMapping("/{companyPostId}/details")
     public ResponseEntity<JobPost> getPostById(@PathVariable Long companyPostId) {
-        JobPost jobPost = jobPostService.getJobPostDetail(companyPostId);
-        return new ResponseEntity<>(jobPost, HttpStatus.OK);
+        try {
+            JobPost jobPost = jobPostService.getJobPostDetail(companyPostId);
+            return new ResponseEntity<>(jobPost, HttpStatus.OK);
+        } catch (RuntimeException re) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Operation(summary = "채용공고문 수정", description = "공고문을 수정합니다", tags = {"Register Controller"})
@@ -121,10 +127,15 @@ public class RegisterController {
     public ResponseEntity<String> updatePost(
             @PathVariable Long companyPostId,
             @Valid @RequestBody UpdateJobDto updateJobDto) {
+        try {
+            long updatedPostId = jobPostService.updatePost(companyPostId, updateJobDto);
 
-        long updatedPostId = jobPostService.updatePost(companyPostId, updateJobDto);
-
-        return ResponseEntity.ok("채용 공고 업데이트가 완료되었습니다. 업데이트된 포스트 ID: " + updatedPostId);
+            return ResponseEntity.ok("채용 공고 업데이트가 완료되었습니다. 업데이트된 포스트 ID: " + updatedPostId);
+        } catch (RuntimeException re) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @Operation(summary = "채용공고문 삭제", description = "공고문을 삭제합니다", tags = {"Register Controller"})
@@ -136,7 +147,13 @@ public class RegisterController {
     })
     @DeleteMapping("/delete/{companyPostId}")
     public ResponseEntity<String> deletePost(@PathVariable Long companyPostId) {
-        long deletePostId = jobPostService.deletePost(companyPostId);
-        return ResponseEntity.ok("채용공고가 삭제되었습니다.");
+        try {
+            long deletePostId = jobPostService.deletePost(companyPostId);
+            return ResponseEntity.ok("공고 번호 " + deletePostId + "가 삭제되었습니다.");
+        } catch (RuntimeException re) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
