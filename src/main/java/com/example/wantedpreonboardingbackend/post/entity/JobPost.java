@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "company")
+@Table(name = "post")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -18,7 +18,7 @@ public class JobPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_post_id", columnDefinition = "BIGINT")
     private Long companyPostId;
-    @Column(name = "company_name", columnDefinition = "VARCHAR(50)")
+    @Column(name = "company", columnDefinition = "VARCHAR(30)")
     private String companyName;
     @Column(name = "position", columnDefinition = "VARCHAR(30)")
     private String position;

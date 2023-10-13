@@ -21,7 +21,7 @@ import java.util.List;
 public class RegisterController {
     private final JobPostService jobPostService;
 
-    @Operation(summary = " 채용공고 등록 요청", description = "채용공고가 등록됩니다.", tags = {"Register Controller"})
+    @Operation(summary = " 채용공고 등록 요청", description = "채용공고가 등록됩니다.", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -40,7 +40,7 @@ public class RegisterController {
         }
     }
 
-    @Operation(summary = " 공고 전체 조회", description = "전체 조회합니다.", tags = {"Register Controller"})
+    @Operation(summary = " 공고 전체 조회", description = "전체 조회합니다.", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -59,7 +59,7 @@ public class RegisterController {
         }
     }
 
-    @Operation(summary = "회사 검색", description = "회사명으로 검색합니다", tags = {"Register Controller"})
+    @Operation(summary = "회사 검색", description = "회사명으로 검색합니다", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -78,7 +78,7 @@ public class RegisterController {
         }
     }
 
-    @Operation(summary = "포지션 검색", description = "포지션으로 검색합니다", tags = {"Register Controller"})
+    @Operation(summary = "포지션 검색", description = "포지션으로 검색합니다", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -97,7 +97,7 @@ public class RegisterController {
         }
     }
 
-    @Operation(summary = "상세 조회", description = "상세 조회합니다.", tags = {"Register Controller"})
+    @Operation(summary = "상세 조회", description = "상세 조회합니다.", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -116,7 +116,7 @@ public class RegisterController {
         }
     }
 
-    @Operation(summary = "채용공고문 수정", description = "공고문을 수정합니다", tags = {"Register Controller"})
+    @Operation(summary = "채용공고문 수정", description = "공고문을 수정합니다", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -138,7 +138,7 @@ public class RegisterController {
         }
     }
 
-    @Operation(summary = "채용공고문 삭제", description = "공고문을 삭제합니다", tags = {"Register Controller"})
+    @Operation(summary = "채용공고문 삭제", description = "공고문을 삭제합니다", tags = {"Post Controller"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),

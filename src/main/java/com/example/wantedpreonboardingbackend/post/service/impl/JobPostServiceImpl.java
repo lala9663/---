@@ -20,7 +20,7 @@ public class JobPostServiceImpl implements JobPostService {
 
 
     @Override
-    public long addRegisterJob(@NotNull RegisterJobDto registerJobDto) {
+    public long addRegisterJob(RegisterJobDto registerJobDto) {
 
         if (isDuplicateJob(registerJobDto.getCompanyName(), registerJobDto.getPosition())) {
             throw JobPostException.duplicateJob();
