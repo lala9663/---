@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/jobPost")
 @RequiredArgsConstructor
-public class RegisterController {
+public class PostController {
     private final JobPostService jobPostService;
 
     @Operation(summary = " 채용공고 등록 요청", description = "채용공고가 등록됩니다.", tags = {"Post Controller"})

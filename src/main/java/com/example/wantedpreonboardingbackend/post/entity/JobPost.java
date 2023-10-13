@@ -1,9 +1,12 @@
 package com.example.wantedpreonboardingbackend.post.entity;
 
+import com.example.wantedpreonboardingbackend.apply.entity.Apply;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,6 +32,16 @@ public class JobPost {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> stacks = new HashSet<>();
 
+    @OneToMany(mappedBy = "jobPost")
+    private List<Apply> userJobPosts = new ArrayList<>();
+
+    public JobPost(long companyPostId, String companyName, String position, int reward, String content, Set<String> stacks) {
+        this.companyPostId = companyPostId;
+        this.companyName = companyName;
+        this.position = position;
+        this.reward = reward;
+        this.stacks = stacks;
+    }
 
     public void updateFrom(JobPost other) {
         if (other.getCompanyName() != null) {
