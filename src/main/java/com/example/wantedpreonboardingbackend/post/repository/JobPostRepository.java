@@ -1,6 +1,6 @@
-package com.example.wantedpreonboardingbackend.board.repository;
+package com.example.wantedpreonboardingbackend.post.repository;
 
-import com.example.wantedpreonboardingbackend.board.entity.JobPost;
+import com.example.wantedpreonboardingbackend.post.entity.JobPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

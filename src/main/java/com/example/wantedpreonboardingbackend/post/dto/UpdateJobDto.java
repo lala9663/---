@@ -1,4 +1,4 @@
-package com.example.wantedpreonboardingbackend.board.dto;
+package com.example.wantedpreonboardingbackend.post.dto;
 
 
 import lombok.*;

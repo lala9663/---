@@ -1,9 +1,9 @@
-package com.example.wantedpreonboardingbackend.board.controller;
+package com.example.wantedpreonboardingbackend.post.controller;
 
-import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
-import com.example.wantedpreonboardingbackend.board.dto.UpdateJobDto;
-import com.example.wantedpreonboardingbackend.board.entity.JobPost;
-import com.example.wantedpreonboardingbackend.board.service.JobPostService;
+import com.example.wantedpreonboardingbackend.post.dto.RegisterJobDto;
+import com.example.wantedpreonboardingbackend.post.dto.UpdateJobDto;
+import com.example.wantedpreonboardingbackend.post.entity.JobPost;
+import com.example.wantedpreonboardingbackend.post.service.JobPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

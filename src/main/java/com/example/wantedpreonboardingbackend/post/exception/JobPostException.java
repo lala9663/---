@@ -1,4 +1,4 @@
-package com.example.wantedpreonboardingbackend.board.exception;
+package com.example.wantedpreonboardingbackend.post.exception;
 
 public class JobPostException extends RuntimeException{
 

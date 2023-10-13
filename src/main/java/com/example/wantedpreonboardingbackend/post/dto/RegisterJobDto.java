@@ -1,6 +1,6 @@
-package com.example.wantedpreonboardingbackend.board.dto;
+package com.example.wantedpreonboardingbackend.post.dto;
 
-import com.example.wantedpreonboardingbackend.board.entity.JobPost;
+import com.example.wantedpreonboardingbackend.post.entity.JobPost;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

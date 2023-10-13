@@ -1,13 +1,12 @@
-package com.example.wantedpreonboardingbackend.board.service.impl;
+package com.example.wantedpreonboardingbackend.post.service.impl;
 
-import com.example.wantedpreonboardingbackend.board.dto.RegisterJobDto;
-import com.example.wantedpreonboardingbackend.board.dto.UpdateJobDto;
-import com.example.wantedpreonboardingbackend.board.entity.JobPost;
-import com.example.wantedpreonboardingbackend.board.exception.JobPostException;
-import com.example.wantedpreonboardingbackend.board.repository.JobPostRepository;
-import com.example.wantedpreonboardingbackend.board.service.JobPostService;
+import com.example.wantedpreonboardingbackend.post.dto.RegisterJobDto;
+import com.example.wantedpreonboardingbackend.post.dto.UpdateJobDto;
+import com.example.wantedpreonboardingbackend.post.entity.JobPost;
+import com.example.wantedpreonboardingbackend.post.exception.JobPostException;
+import com.example.wantedpreonboardingbackend.post.repository.JobPostRepository;
+import com.example.wantedpreonboardingbackend.post.service.JobPostService;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

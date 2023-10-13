@@ -1,4 +1,4 @@
-package com.example.wantedpreonboardingbackend.board.entity;
+package com.example.wantedpreonboardingbackend.post.entity;
 
 import lombok.*;
 
