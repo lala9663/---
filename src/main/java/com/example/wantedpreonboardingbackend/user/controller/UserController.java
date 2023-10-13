@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.user.controller;
 
+import com.example.wantedpreonboardingbackend.user.dto.LoginRequestDto;
 import com.example.wantedpreonboardingbackend.user.dto.RegisterUserDto;
 import com.example.wantedpreonboardingbackend.user.entity.User;
 import com.example.wantedpreonboardingbackend.user.repository.UserRepository;
@@ -49,10 +50,11 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PostMapping("/login")
-    public String loginSubmit(@RequestParam String username, @RequestParam String password, HttpSession session) {
-        if (userService.login(username, password)) {
-            Optional<User> user = userRepository.findByUserId(username);
-            session.setAttribute("user", user);
+    public String loginSubmit(@RequestBody LoginRequestDto loginRequest, HttpSession session) {
+        if (userService.login(loginRequest.getName(), loginRequest.getPassword())) {
+            session.setAttribute("name", loginRequest.getName());
+            String name = (String) session.getAttribute("name");
+            System.out.println(name);
             return "redirect:/jobPost";
         }
         return "login";
