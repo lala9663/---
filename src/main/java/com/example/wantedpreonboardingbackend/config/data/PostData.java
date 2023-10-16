@@ -23,76 +23,76 @@ public class PostData {
 
     @PostConstruct
     public void init() {
-        List<Post> Posts = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
 
         Company companyA = Company.builder()
-                .companyName("CompanyA")
+                .companyName("회사1")
                 .build();
 
         Company companyB = Company.builder()
-                .companyName("CompanyB")
+                .companyName("회사2")
                 .build();
 
         Company companyC = Company.builder()
-                .companyName("CompanyC")
+                .companyName("회사3")
                 .build();
 
         Company companyD = Company.builder()
-                .companyName("CompanyD")
+                .companyName("회사4")
                 .build();
 
         companyRepository.saveAll(List.of(companyA, companyB, companyC, companyD));
 
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyA)
-                .position("Software Engineer")
+                .position("소프트웨어 엔지니어")
                 .reward(80000)
-                .content("We are hiring a software engineer.")
+                .content("소프트웨어 엔지니어를 구하고 있습니다.")
                 .stacks(Set.of("Java", "Spring Boot", "MySQL"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyB)
-                .position("Data Scientist")
+                .position("데이터 분석")
                 .reward(90000)
-                .content("We are looking for a data scientist.")
+                .content("데이터 분석")
                 .stacks(Set.of("Python", "Machine Learning", "TensorFlow"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyC)
-                .position("Front-end Developer")
+                .position("프론트엔드 개발자")
                 .reward(75000)
-                .content("Join our front-end development team.")
+                .content("신입 프론트엔드 개발자 구하는 중입니다.")
                 .stacks(Set.of("HTML", "CSS", "JavaScript"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyD)
-                .position("Back-end Developer")
+                .position("백엔드 개발자")
                 .reward(80000)
-                .content("Join our back-end development team.")
+                .content("경력 백엔드 개발자 구하는 중입니다.")
                 .stacks(Set.of("Java", "Spring Boot", "SQL"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyB)
-                .position("UI/UX Designer")
+                .position("UI/UX 디자이너")
                 .reward(70000)
-                .content("Join our UI/UX design team.")
-                .stacks(Set.of("UI Design", "User Research"))
+                .content("UI/UX 구합니다.")
+                .stacks(Set.of("UI"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyC)
-                .position("Data Scientist")
+                .position("데이터 분석")
                 .reward(90000)
-                .content("Join our data science team.")
+                .content("데이터 분석 시니어 구합니다.")
                 .stacks(Set.of("Python", "Machine Learning"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyD)
                 .position("UI/UX Designer")
                 .reward(80000)
@@ -100,23 +100,23 @@ public class PostData {
                 .stacks(Set.of("Java", "Spring Boot", "SQL"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyA)
-                .position("UI/UX Designer")
+                .position("UI/UX")
                 .reward(70000)
-                .content("Join our UI/UX design team.")
-                .stacks(Set.of("UI Design", "User Research"))
+                .content("어서오세요.")
+                .stacks(Set.of("UI", "UX"))
                 .build());
 
-        Posts.add(Post.builder()
+        posts.add(Post.builder()
                 .companyName(companyA)
-                .position("Data Scientist")
+                .position("데이터 분석")
                 .reward(90000)
-                .content("Join our data science team.")
+                .content("환영합니다.")
                 .stacks(Set.of("Python", "Machine Learning"))
                 .build());
 
-        postRepository.saveAll(Posts);
+        postRepository.saveAll(posts);
     }
 }
 
