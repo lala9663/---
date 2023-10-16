@@ -111,15 +111,18 @@
 ### 5. 채용 상세 페이지
 ```
 {
-  "companyPostId": 3,
-  "companyName": "온보딩",
-  "position": "풀스택",
-  "reward": 75000,
-  "content": "신입 개발자 구합니다. 우리는 ...",
+  "postId": 2,
+  "companyName": "companyB",
+  "position": null,
+  "reward": 90000,
+  "content": "데이터 분석",
   "stacks": [
-    "Node",
-    "CI/CD",
-    "AWS"
+    "Machine Learning",
+    "TensorFlow",
+    "Python"
+  ],
+  "otherList": [
+    "UI/UX 디자이너"
   ]
 }
 ```
@@ -127,7 +130,7 @@
 **구현**
 - @GetMapping("/{companyPostId}/details")
 - 공고문이 존재 하지 않을 경우 예외처리
-- 해당 회사가 올린 다른 채용공고 표시 
+- 해당 회사가 올린 다른 채용공고 표시(포지션으로 정함)
 
 
 ### 6. 채용공고 지원
@@ -137,5 +140,5 @@
 - 로그인  
   - 아이디와 비밀번호를 입력하여 로그인
 - 지원
-  - 지원은 1회만 지원 가능하게 구현 
+  - 지원은 1회만
 
