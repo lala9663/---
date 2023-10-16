@@ -21,10 +21,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", columnDefinition = "BIGINT")
-    private Long postId;
-    @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
-    private Company companyName;
+    private Long id;
     @Column(name = "position", columnDefinition = "VARCHAR(30)")
     private String position;
     @Column(name = "reward", columnDefinition = "INT")
@@ -33,16 +30,11 @@ public class Post {
     private String content;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> stacks = new HashSet<>();
-    @OneToMany(mappedBy = "post")
-    private List<Apply> posts = new ArrayList<>();
-    public Post(long postId, Company companyName, String position, int reward, String content, Set<String> stacks) {
-        this.postId = postId;
-        this.companyName = companyName;
-        this.position = position;
-        this.reward = reward;
-        this.content = content;
-        this.stacks = stacks;
-    }
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
+
 
     public void updateFrom(Post other) {
         if (other.getPosition() != null) {

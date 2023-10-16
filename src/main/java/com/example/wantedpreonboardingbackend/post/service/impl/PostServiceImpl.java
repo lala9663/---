@@ -1,6 +1,8 @@
 package com.example.wantedpreonboardingbackend.post.service.impl;
 
 import com.example.wantedpreonboardingbackend.company.entity.Company;
+import com.example.wantedpreonboardingbackend.company.repository.CompanyRepository;
+import com.example.wantedpreonboardingbackend.post.dto.PostResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.RegisterPostDto;
 import com.example.wantedpreonboardingbackend.post.dto.UpdatePostDto;
 import com.example.wantedpreonboardingbackend.post.entity.Post;
@@ -12,31 +14,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final CompanyRepository companyRepository;
 
 
     @Override
     public long addRegisterJob(RegisterPostDto registerPostDto) {
 
-        Post Post = registerPostDto.toEntity();
-        postRepository.save(Post);
+        Company companyId = companyRepository.findById(registerPostDto.getCompanyId())
+                .orElseThrow(PostException::notFoundCompany);
 
-        return Post.getPostId();
+        Post post = Post.builder()
+                .company(companyId)
+                .position(registerPostDto.getPosition())
+                .reward(registerPostDto.getReward())
+                .content(registerPostDto.getContent())
+                .stacks(registerPostDto.getStacks())
+                .build();
+
+        companyId.getPosts().add(post);
+
+        Post savedPost = postRepository.save(post);
+
+        return savedPost.getId();
     }
 
-    @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
-    }
 
-    @Override
-    public List<Post> getPostsByCompany(Company companyName) {
-        return postRepository.findByCompanyName(companyName);
-    }
+//    @Override
+//    public List<Post> getPostsByCompany(String companyName) {
+//        return postRepository.findByCompanyName(companyName);
+//    }
 
     @Override
     public List<Post> getPostsByPosition(String position) {
@@ -59,7 +71,7 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(existingPost);
 
-        return existingPost.getPostId();
+        return existingPost.getId();
     }
 
     @Override
@@ -84,4 +96,17 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    public Post findById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(PostException::NotFoundPost);
+    }
+
+    @Override
+    public List<PostResponseDto> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+        return posts.stream()
+                .map(PostResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }

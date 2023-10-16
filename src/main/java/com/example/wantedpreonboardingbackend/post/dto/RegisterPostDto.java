@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.post.dto;
 
+import com.example.wantedpreonboardingbackend.company.entity.Company;
 import com.example.wantedpreonboardingbackend.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterPostDto {
+
+    @NotBlank(message = "회사 ID를 제공해야 합니다")
+    private Long companyId;
     @NotBlank(message = "포지션")
     @Size(max = 30, message = "최대 30자")
     private String position;
@@ -25,12 +29,4 @@ public class RegisterPostDto {
     @NotBlank(message = "사용 기술")
     private Set<String> stacks;
 
-    public Post toEntity() {
-        return Post.builder()
-                .position(this.position)
-                .reward(this.reward)
-                .content(this.content)
-                .stacks(this.stacks)
-                .build();
-    }
 }
