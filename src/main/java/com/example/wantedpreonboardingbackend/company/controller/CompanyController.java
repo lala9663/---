@@ -1,12 +1,10 @@
 package com.example.wantedpreonboardingbackend.company.controller;
 
 import com.example.wantedpreonboardingbackend.company.dto.RegisterCompanyDto;
-import com.example.wantedpreonboardingbackend.company.entity.Company;
 import com.example.wantedpreonboardingbackend.company.service.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -20,8 +20,7 @@ public class Company {
     @Column(name = "company_name", columnDefinition = "VARCHAR(30)")
     private String companyName;
 
-    @OneToMany(mappedBy = "id", targetEntity = Post.class,
-            cascade = CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> postList;
 }
 

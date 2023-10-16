@@ -1,6 +1,7 @@
 package com.example.wantedpreonboardingbackend.post.service;
 
 import com.example.wantedpreonboardingbackend.company.entity.Company;
+import com.example.wantedpreonboardingbackend.post.dto.PostDetailResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.PostResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.RegisterPostDto;
 import com.example.wantedpreonboardingbackend.post.dto.UpdatePostDto;
@@ -13,12 +14,9 @@ public interface PostService {
 
     List<PostResponseDto> findByPosition(String position);
     List<PostResponseDto> findByCompanyName(String companyName);
-
-
     long updatePost(Long companyPostId, UpdatePostDto updatePostDto);
     long deletePost(Long companyPostId);
-    Post getPostDetail(Long postId);
     List<PostResponseDto> getAllPosts();
     Post findById(Long postId);
-
+    PostDetailResponseDto getPostDetailById(Long postId);
 }

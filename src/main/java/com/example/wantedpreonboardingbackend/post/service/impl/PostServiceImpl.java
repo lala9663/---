@@ -2,6 +2,7 @@ package com.example.wantedpreonboardingbackend.post.service.impl;
 
 import com.example.wantedpreonboardingbackend.company.entity.Company;
 import com.example.wantedpreonboardingbackend.company.repository.CompanyRepository;
+import com.example.wantedpreonboardingbackend.post.dto.PostDetailResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.PostResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.RegisterPostDto;
 import com.example.wantedpreonboardingbackend.post.dto.UpdatePostDto;
@@ -37,7 +38,7 @@ public class PostServiceImpl implements PostService {
                 .stacks(registerPostDto.getStacks())
                 .build();
 
-        companyId.getPosts().add(post);
+        companyId.getPostList().add(post);
 
         Post savedPost = postRepository.save(post);
 
@@ -92,19 +93,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPostDetail(Long postId) {
-        Optional<Post> detail = postRepository.findById(postId);
-        if (detail.isPresent()) {
-            return detail.get();
-        } else {
-            throw PostException.NotFoundPost();
-        }
-    }
-
-    @Override
     public Post findById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(PostException::NotFoundPost);
+    }
+
+    @Override
+    public PostDetailResponseDto getPostDetailById(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostException::NotFoundPost);
+
+        return PostDetailResponseDto.fromEntity(post);
     }
 
     @Override

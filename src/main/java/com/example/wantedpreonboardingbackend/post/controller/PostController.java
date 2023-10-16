@@ -1,6 +1,7 @@
 package com.example.wantedpreonboardingbackend.post.controller;
 
 import com.example.wantedpreonboardingbackend.company.entity.Company;
+import com.example.wantedpreonboardingbackend.post.dto.PostDetailResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.PostResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.RegisterPostDto;
 import com.example.wantedpreonboardingbackend.post.dto.UpdatePostDto;
@@ -120,5 +121,18 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @Operation(summary = "상세 조회", description = "공고문을 조회합니다", tags = {"Post Controller"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDetailResponseDto> getPostDetail(@PathVariable Long postId) {
+        PostDetailResponseDto postDetail = postService.getPostDetailById(postId);
+        return ResponseEntity.ok(postDetail);
     }
 }
