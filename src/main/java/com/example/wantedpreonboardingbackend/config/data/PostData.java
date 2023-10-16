@@ -26,26 +26,26 @@ public class PostData {
         List<Post> posts = new ArrayList<>();
 
         Company companyA = Company.builder()
-                .companyName("회사1")
+                .companyName("companyA")
                 .build();
 
         Company companyB = Company.builder()
-                .companyName("회사2")
+                .companyName("companyB")
                 .build();
 
         Company companyC = Company.builder()
-                .companyName("회사3")
+                .companyName("companyC")
                 .build();
 
         Company companyD = Company.builder()
-                .companyName("회사4")
+                .companyName("companyD")
                 .build();
 
         companyRepository.saveAll(List.of(companyA, companyB, companyC, companyD));
 
 
         posts.add(Post.builder()
-                .companyName(companyA)
+                .company(companyA)
                 .position("소프트웨어 엔지니어")
                 .reward(80000)
                 .content("소프트웨어 엔지니어를 구하고 있습니다.")
@@ -53,15 +53,15 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyB)
-                .position("데이터 분석")
+                .company(companyB)
+                    .position("데이터 분석")
                 .reward(90000)
                 .content("데이터 분석")
                 .stacks(Set.of("Python", "Machine Learning", "TensorFlow"))
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyC)
+                .company(companyC)
                 .position("프론트엔드 개발자")
                 .reward(75000)
                 .content("신입 프론트엔드 개발자 구하는 중입니다.")
@@ -69,7 +69,7 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyD)
+                .company(companyD)
                 .position("백엔드 개발자")
                 .reward(80000)
                 .content("경력 백엔드 개발자 구하는 중입니다.")
@@ -77,7 +77,7 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyB)
+                .company(companyB)
                 .position("UI/UX 디자이너")
                 .reward(70000)
                 .content("UI/UX 구합니다.")
@@ -85,7 +85,7 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyC)
+                .company(companyC)
                 .position("데이터 분석")
                 .reward(90000)
                 .content("데이터 분석 시니어 구합니다.")
@@ -93,7 +93,7 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyD)
+                .company(companyD)
                 .position("UI/UX Designer")
                 .reward(80000)
                 .content("Join our back-end development team.")
@@ -101,7 +101,7 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyA)
+                .company(companyA)
                 .position("UI/UX")
                 .reward(70000)
                 .content("어서오세요.")
@@ -109,7 +109,7 @@ public class PostData {
                 .build());
 
         posts.add(Post.builder()
-                .companyName(companyA)
+                .company(companyA)
                 .position("데이터 분석")
                 .reward(90000)
                 .content("환영합니다.")
