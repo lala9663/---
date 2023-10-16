@@ -16,7 +16,7 @@ public class Apply {
     @Id
     @Column(updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long applyId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

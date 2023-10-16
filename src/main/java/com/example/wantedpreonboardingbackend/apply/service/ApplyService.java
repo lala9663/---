@@ -1,8 +1,9 @@
 package com.example.wantedpreonboardingbackend.apply.service;
 
-import javax.servlet.http.HttpSession;
+import com.example.wantedpreonboardingbackend.apply.dto.ApplyDto;
 
 public interface ApplyService {
-    boolean applyToPost(Long postId, HttpSession session);
+
+    Long apply(ApplyDto applyDto);
 
 }

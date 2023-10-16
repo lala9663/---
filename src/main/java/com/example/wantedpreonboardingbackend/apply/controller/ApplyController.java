@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.apply.controller;
 
+import com.example.wantedpreonboardingbackend.apply.dto.ApplyDto;
 import com.example.wantedpreonboardingbackend.apply.service.ApplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -7,8 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/Post")
@@ -23,15 +22,10 @@ public class ApplyController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @PostMapping("/apply/{postId}")
-    public ResponseEntity<String> applyToPost(@RequestHeader Long postId, HttpSession session) {
-        boolean applied = applyService.applyToPost(postId, session);
-
-        if (applied) {
-            return ResponseEntity.ok("지원이 완료되었습니다.");
-        } else {
-            return ResponseEntity.badRequest().body("지원에 실패했습니다.");
-        }
+    @PostMapping("/apply")
+    public ResponseEntity<String> apply(@RequestBody ApplyDto applyDto) {
+        applyService.apply(applyDto);
+        return ResponseEntity.ok("지원이 완료되었습니다");
     }
 
 }

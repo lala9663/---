@@ -1,47 +1,36 @@
 package com.example.wantedpreonboardingbackend.apply.service.impl;
 
+import com.example.wantedpreonboardingbackend.apply.dto.ApplyDto;
 import com.example.wantedpreonboardingbackend.apply.entity.Apply;
 import com.example.wantedpreonboardingbackend.apply.repository.ApplyRepository;
 import com.example.wantedpreonboardingbackend.apply.service.ApplyService;
 import com.example.wantedpreonboardingbackend.post.entity.Post;
-import com.example.wantedpreonboardingbackend.post.repository.PostRepository;
+import com.example.wantedpreonboardingbackend.post.service.PostService;
 import com.example.wantedpreonboardingbackend.user.entity.User;
-import com.example.wantedpreonboardingbackend.user.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import com.example.wantedpreonboardingbackend.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
-import java.util.Optional;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ApplyServiceImpl implements ApplyService {
     private final ApplyRepository applyRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final UserService userService;
+    private final PostService postService;
 
 
     @Override
-    public boolean applyToPost(Long postId, HttpSession session) {
-        String applicantName = (String) session.getAttribute("name");
+    public Long apply(ApplyDto applyDto) {
+        User user = userService.findById(applyDto.getMemberId());
+        Post post = postService.findById(applyDto.getPostId());
 
-        if (applicantName != null) {
-            Optional<Post> post = postRepository.findById(postId);
+        Apply apply = Apply.builder()
+                .user(user)
+                .post(post)
+                .build();
 
-            User applicant = userRepository.findByName(applicantName);
+        applyRepository.save(apply);
 
-
-            Apply apply = Apply.builder()
-                    .post(post.get())
-                    .user(applicant)
-                    .build();
-            applyRepository.save(apply);
-
-            System.out.println(applicantName + "님이 " + postId + "번 공고에 지원했습니다.");
-
-            return true;
-        } else {
-            return false;
-        }
+        return apply.getId();
     }
 }
