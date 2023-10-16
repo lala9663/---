@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.user.service.impl;
 
+import com.example.wantedpreonboardingbackend.post.exception.PostException;
 import com.example.wantedpreonboardingbackend.user.dto.RegisterUserDto;
 import com.example.wantedpreonboardingbackend.user.entity.User;
 import com.example.wantedpreonboardingbackend.user.repository.UserRepository;
@@ -20,18 +21,13 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        return user.getUserId();
+        return user.getId();
     }
+
 
     @Override
-    public boolean login(String name, String password) {
-        User user = userRepository.findByName(name);
-
-        if (user != null && user.getPassword().equals(password)) {
-            return true;
-        }
-
-        return false;
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(PostException::notFoundCompany);
     }
-
 }

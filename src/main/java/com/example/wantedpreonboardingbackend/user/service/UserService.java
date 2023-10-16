@@ -1,8 +1,10 @@
 package com.example.wantedpreonboardingbackend.user.service;
 
 import com.example.wantedpreonboardingbackend.user.dto.RegisterUserDto;
+import com.example.wantedpreonboardingbackend.user.entity.User;
 
 public interface UserService {
     long registerUser(RegisterUserDto registerUserDto);
-    boolean login(String name, String password);
+    User findById(Long userId);
+
 }

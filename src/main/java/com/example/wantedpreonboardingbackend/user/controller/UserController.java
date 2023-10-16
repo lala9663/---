@@ -1,6 +1,5 @@
 package com.example.wantedpreonboardingbackend.user.controller;
 
-import com.example.wantedpreonboardingbackend.user.dto.LoginRequestDto;
 import com.example.wantedpreonboardingbackend.user.dto.RegisterUserDto;
 import com.example.wantedpreonboardingbackend.user.repository.UserRepository;
 import com.example.wantedpreonboardingbackend.user.service.UserService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,21 +40,5 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "로그인", description = "로그인을 시도합니다.", tags = {"User Controller"})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
-    @PostMapping("/login")
-    public String loginSubmit(@RequestBody LoginRequestDto loginRequest, HttpSession session) {
-        if (userService.login(loginRequest.getName(), loginRequest.getPassword())) {
-            session.setAttribute("name", loginRequest.getName());
-            String name = (String) session.getAttribute("name");
-            System.out.println(name);
-            return "redirect:/Post";
-        }
-        return "login";
-    }
+
 }
