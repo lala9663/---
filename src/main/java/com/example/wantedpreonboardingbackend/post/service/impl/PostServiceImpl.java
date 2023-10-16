@@ -44,15 +44,20 @@ public class PostServiceImpl implements PostService {
         return savedPost.getId();
     }
 
-
-//    @Override
-//    public List<Post> getPostsByCompany(String companyName) {
-//        return postRepository.findByCompanyName(companyName);
-//    }
+    @Override
+    public List<PostResponseDto> findByPosition(String position) {
+        List<Post> posts = postRepository.findByPosition(position);
+        return posts.stream()
+                .map(PostResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 
     @Override
-    public List<Post> getPostsByPosition(String position) {
-        return postRepository.findByPosition(position);
+    public List<PostResponseDto> findByCompanyName(String companyName) {
+        List<Post> posts = postRepository.findByCompanyCompanyName(companyName);
+        return posts.stream()
+                .map(PostResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override

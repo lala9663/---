@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.post.controller;
 
+import com.example.wantedpreonboardingbackend.company.entity.Company;
 import com.example.wantedpreonboardingbackend.post.dto.PostResponseDto;
 import com.example.wantedpreonboardingbackend.post.dto.RegisterPostDto;
 import com.example.wantedpreonboardingbackend.post.dto.UpdatePostDto;
@@ -54,24 +55,18 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-//    @Operation(summary = "회사명 검색", description = "회사명으로 검색합니다", tags = {"Post Controller"})
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "OK"),
-//            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-//            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-//            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-//    })
-//    @GetMapping("/list/company/{companyName}")
-//    public ResponseEntity<List<Post>> getPostsByCompany(@PathVariable String companyName) {
-//        try {
-//            List<Post> posts = postService.getPostsByCompany(companyName);
-//            return ResponseEntity.ok(posts);
-//        } catch (RuntimeException re) {
-//            return ResponseEntity.badRequest().build();
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    @Operation(summary = "회사명 검색", description = "회사명으로 검색합니다", tags = {"Post Controller"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @GetMapping("/list/company/{companyName}")
+    public ResponseEntity<List<PostResponseDto>> findByCompanyName(@PathVariable String companyName) {
+        List<PostResponseDto> posts = postService.findByCompanyName(companyName);
+        return ResponseEntity.ok(posts);
+    }
 
     @Operation(summary = "포지션 검색", description = "포지션으로 검색합니다", tags = {"Post Controller"})
     @ApiResponses({
@@ -81,15 +76,9 @@ public class PostController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @GetMapping("/list/position/{position}")
-    public ResponseEntity<List<Post>> getPostsByPosition(@PathVariable String position) {
-        try {
-            List<Post> posts = postService.getPostsByPosition(position);
-            return ResponseEntity.ok(posts);
-        } catch (RuntimeException re) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<List<PostResponseDto>> findByPosition(@RequestParam String position) {
+        List<PostResponseDto> posts = postService.findByPosition(position);
+        return ResponseEntity.ok(posts);
     }
 
     @Operation(summary = "채용공고문 수정", description = "공고문을 수정합니다", tags = {"Post Controller"})

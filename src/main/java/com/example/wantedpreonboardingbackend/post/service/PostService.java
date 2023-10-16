@@ -10,14 +10,15 @@ import java.util.List;
 
 public interface PostService {
     long addRegisterJob(RegisterPostDto registerPostDto);
-//    List<Post> getPostsByCompany(String companyName);
 
-    List<Post> getPostsByPosition(String position);
+    List<PostResponseDto> findByPosition(String position);
+    List<PostResponseDto> findByCompanyName(String companyName);
+
+
     long updatePost(Long companyPostId, UpdatePostDto updatePostDto);
     long deletePost(Long companyPostId);
     Post getPostDetail(Long postId);
     List<PostResponseDto> getAllPosts();
-
     Post findById(Long postId);
 
 }

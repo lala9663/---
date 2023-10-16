@@ -21,7 +21,7 @@ public class PostResponseDto {
     private Set<String> stacks;
 
     public static PostResponseDto fromEntity(Post post) {
-        return builder()
+        return PostResponseDto.builder()
                 .postId(post.getId())
                 .companyName(post.getCompany().getCompanyName())
                 .position(post.getPosition())

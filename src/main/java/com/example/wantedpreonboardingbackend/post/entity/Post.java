@@ -1,13 +1,10 @@
 package com.example.wantedpreonboardingbackend.post.entity;
 
-import com.example.wantedpreonboardingbackend.apply.entity.Apply;
 import com.example.wantedpreonboardingbackend.company.entity.Company;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
