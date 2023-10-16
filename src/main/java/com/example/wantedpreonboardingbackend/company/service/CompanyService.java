@@ -1,7 +1,7 @@
 package com.example.wantedpreonboardingbackend.company.service;
 
-import com.example.wantedpreonboardingbackend.company.entity.Company;
+import com.example.wantedpreonboardingbackend.company.dto.RegisterCompanyDto;
 public interface CompanyService {
-    Long registerCompany(Company company);
+    Long registerCompany(RegisterCompanyDto registerCompanyDto);
 
 }

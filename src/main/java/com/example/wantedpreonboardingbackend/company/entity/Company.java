@@ -1,8 +1,10 @@
 package com.example.wantedpreonboardingbackend.company.entity;
 
+import com.example.wantedpreonboardingbackend.post.entity.Post;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "company")
@@ -14,9 +16,12 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id", columnDefinition = "BIGINT")
-    private Long companyId;
+    private Long id;
     @Column(name = "company_name", columnDefinition = "VARCHAR(30)")
     private String companyName;
 
+    @OneToMany(mappedBy = "id", targetEntity = Post.class,
+            cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<Post> postList;
 }
 

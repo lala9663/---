@@ -1,5 +1,6 @@
 package com.example.wantedpreonboardingbackend.company.controller;
 
+import com.example.wantedpreonboardingbackend.company.dto.RegisterCompanyDto;
 import com.example.wantedpreonboardingbackend.company.entity.Company;
 import com.example.wantedpreonboardingbackend.company.service.CompanyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +29,8 @@ public class CompanyController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PostMapping("/register")
-    public ResponseEntity<Long> registerCompany(@RequestBody Company company) {
-        Long companyId = companyService.registerCompany(company);
+    public ResponseEntity<Long> registerCompany(@RequestBody RegisterCompanyDto registerCompanyDto) {
+        Long companyId = companyService.registerCompany(registerCompanyDto);
         return new ResponseEntity<>(companyId, HttpStatus.CREATED);
     }
 
