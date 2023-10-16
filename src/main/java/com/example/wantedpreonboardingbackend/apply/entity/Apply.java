@@ -1,6 +1,6 @@
 package com.example.wantedpreonboardingbackend.apply.entity;
 
-import com.example.wantedpreonboardingbackend.post.entity.JobPost;
+import com.example.wantedpreonboardingbackend.post.entity.Post;
 import com.example.wantedpreonboardingbackend.user.entity.User;
 import lombok.*;
 
@@ -23,7 +23,7 @@ public class Apply {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "company_post_id")
-    private JobPost jobPost;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
 }

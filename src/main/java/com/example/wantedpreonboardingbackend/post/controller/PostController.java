@@ -1,9 +1,10 @@
 package com.example.wantedpreonboardingbackend.post.controller;
 
-import com.example.wantedpreonboardingbackend.post.dto.RegisterJobDto;
-import com.example.wantedpreonboardingbackend.post.dto.UpdateJobDto;
-import com.example.wantedpreonboardingbackend.post.entity.JobPost;
-import com.example.wantedpreonboardingbackend.post.service.JobPostService;
+import com.example.wantedpreonboardingbackend.company.entity.Company;
+import com.example.wantedpreonboardingbackend.post.dto.RegisterPostDto;
+import com.example.wantedpreonboardingbackend.post.dto.UpdatePostDto;
+import com.example.wantedpreonboardingbackend.post.entity.Post;
+import com.example.wantedpreonboardingbackend.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,10 +17,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/jobPost")
+@RequestMapping("/Post")
 @RequiredArgsConstructor
 public class PostController {
-    private final JobPostService jobPostService;
+    private final PostService postService;
 
     @Operation(summary = " 채용공고 등록 요청", description = "채용공고가 등록됩니다.", tags = {"Post Controller"})
     @ApiResponses({
@@ -29,10 +30,10 @@ public class PostController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PostMapping("/register")
-    public ResponseEntity<String> registerPosts(RegisterJobDto registerJobDto) {
+    public ResponseEntity<String> registerPosts(RegisterPostDto registerPostDto) {
         try {
-            long jobPostId = jobPostService.addRegisterJob(registerJobDto);
-            return ResponseEntity.ok("구인공고가 등록되었습니다. id는: " + jobPostId + " 입니다");
+            long postId = postService.addRegisterJob(registerPostDto);
+            return ResponseEntity.ok("구인공고가 등록되었습니다. id는: " + postId + " 입니다");
         } catch (RuntimeException re) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
@@ -48,10 +49,10 @@ public class PostController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @GetMapping("/list")
-    public ResponseEntity<List<JobPost>> getAllPosts() {
+    public ResponseEntity<List<Post>> getAllPosts() {
         try {
-            List<JobPost> jobPosts = jobPostService.getAllJobs();
-            return ResponseEntity.ok(jobPosts);
+            List<Post> posts = postService.getAllPosts();
+            return ResponseEntity.ok(posts);
         } catch (RuntimeException re) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
@@ -67,10 +68,10 @@ public class PostController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @GetMapping("/list/company/{companyName}")
-    public ResponseEntity<List<JobPost>> getPostsByCompany(@PathVariable String companyName) {
+    public ResponseEntity<List<Post>> getPostsByCompany(@PathVariable Company companyName) {
         try {
-            List<JobPost> jobPosts = jobPostService.getJobsByCompany(companyName);
-            return ResponseEntity.ok(jobPosts);
+            List<Post> posts = postService.getPostsByCompany(companyName);
+            return ResponseEntity.ok(posts);
         } catch (RuntimeException re) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
@@ -86,29 +87,10 @@ public class PostController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @GetMapping("/list/position/{position}")
-    public ResponseEntity<List<JobPost>> getPostsByPosition(@PathVariable String position) {
+    public ResponseEntity<List<Post>> getPostsByPosition(@PathVariable String position) {
         try {
-            List<JobPost> jobPosts = jobPostService.getJobsByPosition(position);
-            return ResponseEntity.ok(jobPosts);
-        } catch (RuntimeException re) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @Operation(summary = "상세 조회", description = "상세 조회합니다.", tags = {"Post Controller"})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
-    @GetMapping("/{companyPostId}/details")
-    public ResponseEntity<JobPost> getPostById(@PathVariable Long companyPostId) {
-        try {
-            JobPost jobPost = jobPostService.getJobPostDetail(companyPostId);
-            return new ResponseEntity<>(jobPost, HttpStatus.OK);
+            List<Post> posts = postService.getPostsByPosition(position);
+            return ResponseEntity.ok(posts);
         } catch (RuntimeException re) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
@@ -123,12 +105,12 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @PutMapping("/update/{companyPostId}")
+    @PutMapping("/update/{postId}")
     public ResponseEntity<String> updatePost(
-            @PathVariable Long companyPostId,
-            @Valid @RequestBody UpdateJobDto updateJobDto) {
+            @PathVariable Long postId,
+            @Valid @RequestBody UpdatePostDto updatePostDto) {
         try {
-            long updatedPostId = jobPostService.updatePost(companyPostId, updateJobDto);
+            long updatedPostId = postService.updatePost(postId, updatePostDto);
 
             return ResponseEntity.ok("채용 공고 업데이트가 완료되었습니다. 업데이트된 포스트 ID: " + updatedPostId);
         } catch (RuntimeException re) {
@@ -145,10 +127,10 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    @DeleteMapping("/delete/{companyPostId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long companyPostId) {
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         try {
-            long deletePostId = jobPostService.deletePost(companyPostId);
+            long deletePostId = postService.deletePost(postId);
             return ResponseEntity.ok("공고 번호 " + deletePostId + "가 삭제되었습니다.");
         } catch (RuntimeException re) {
             return ResponseEntity.badRequest().build();

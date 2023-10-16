@@ -1,6 +1,7 @@
 package com.example.wantedpreonboardingbackend.post.entity;
 
 import com.example.wantedpreonboardingbackend.apply.entity.Apply;
+import com.example.wantedpreonboardingbackend.company.entity.Company;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,14 +16,15 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-public class JobPost {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_post_id", columnDefinition = "BIGINT")
-    private Long companyPostId;
-    @Column(name = "company", columnDefinition = "VARCHAR(30)")
-    private String companyName;
+    @Column(name = "post_id", columnDefinition = "BIGINT")
+    private Long postId;
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company companyName;
     @Column(name = "position", columnDefinition = "VARCHAR(30)")
     private String position;
     @Column(name = "reward", columnDefinition = "INT")
@@ -31,22 +33,18 @@ public class JobPost {
     private String content;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> stacks = new HashSet<>();
-
-    @OneToMany(mappedBy = "jobPost")
-    private List<Apply> userJobPosts = new ArrayList<>();
-
-    public JobPost(long companyPostId, String companyName, String position, int reward, String content, Set<String> stacks) {
-        this.companyPostId = companyPostId;
+    @OneToMany(mappedBy = "post")
+    private List<Apply> posts = new ArrayList<>();
+    public Post(long postId, Company companyName, String position, int reward, String content, Set<String> stacks) {
+        this.postId = postId;
         this.companyName = companyName;
         this.position = position;
         this.reward = reward;
+        this.content = content;
         this.stacks = stacks;
     }
 
-    public void updateFrom(JobPost other) {
-        if (other.getCompanyName() != null) {
-            this.companyName = other.getCompanyName();
-        }
+    public void updateFrom(Post other) {
         if (other.getPosition() != null) {
             this.position = other.getPosition();
         }

@@ -13,12 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Setter
 @Getter
-public class UpdateJobDto {
-
-    @NotBlank(message = "회사 이름")
-    @Size(max = 50, message = "최대 50자")
-    private String companyName;
-
+public class UpdatePostDto {
     @NotBlank(message = "포지션")
     @Size(max = 30, message = "최대 30자")
     private String position;

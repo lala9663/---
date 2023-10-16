@@ -1,7 +1,6 @@
 package com.example.wantedpreonboardingbackend.user.entity;
 
 import com.example.wantedpreonboardingbackend.apply.entity.Apply;
-import com.example.wantedpreonboardingbackend.post.entity.JobPost;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,5 +26,5 @@ public class User {
     @Column(name = "password")
     private String password;
     @OneToMany(mappedBy = "user")
-    private List<Apply> userJobPosts = new ArrayList<>();
+    private List<Apply> posts = new ArrayList<>();
 }

@@ -2,7 +2,6 @@ package com.example.wantedpreonboardingbackend.user.controller;
 
 import com.example.wantedpreonboardingbackend.user.dto.LoginRequestDto;
 import com.example.wantedpreonboardingbackend.user.dto.RegisterUserDto;
-import com.example.wantedpreonboardingbackend.user.entity.User;
 import com.example.wantedpreonboardingbackend.user.repository.UserRepository;
 import com.example.wantedpreonboardingbackend.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,10 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,7 +56,7 @@ public class UserController {
             session.setAttribute("name", loginRequest.getName());
             String name = (String) session.getAttribute("name");
             System.out.println(name);
-            return "redirect:/jobPost";
+            return "redirect:/Post";
         }
         return "login";
     }
