@@ -8,8 +8,13 @@
 - Swagger 3.0.0
 - MariaDB
 
-### 0.1 ERD
+### 0-1 ERD
 ![image](https://github.com/lala9663/wanted-pre-onboarding-backend/assets/105348713/46bb70d5-986f-456f-b06b-1c7859c6d60d)
+
+### 0-2 
+
+http://localhost:8080/swagger-ui/index.html#  
+swagger로 문서화해 두었습니다.
 
 
 ### 1. 채용공고 등록
