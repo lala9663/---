@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(PostException::notFoundCompany);
+                .orElseThrow(() -> new RuntimeException("등록된 회원이 아닙니다"));
     }
+
 }
